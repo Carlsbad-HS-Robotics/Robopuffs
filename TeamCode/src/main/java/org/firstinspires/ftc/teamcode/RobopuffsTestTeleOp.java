@@ -37,14 +37,11 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 //@Disabled //Comment out @Disabled to make opmode available
 public class RobopuffsTestTeleOp extends LinearOpMode {
 
-    RobotHardware roboHardware = new RobotHardware(hardwareMap);
-
-
     private ElapsedTime runtime = new ElapsedTime();
 
     @Override
     public void runOpMode() {
-
+        RobotHardware roboHardware = new RobotHardware(hardwareMap);
         roboHardware.initialize();
 
         waitForStart();

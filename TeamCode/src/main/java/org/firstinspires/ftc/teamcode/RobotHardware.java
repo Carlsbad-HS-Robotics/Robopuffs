@@ -4,6 +4,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo; // CHECK: Is this ok to import
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 
@@ -17,26 +18,42 @@ public class RobotHardware {
     public DcMotor backLeftMotor;
     public DcMotor backRightMotor;
 
+    //servos for airplane launch
+    public Servo rightLauncher; //CHECK: are these correct declarations
+    public Servo leftLauncher;
+
 
     //what does this do?
     private BNO055IMU imu;
     public HardwareMap hardwareMap;
+    final double launchSpeed =  0.02 ;
 
     public RobotHardware (HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;
     }
 
     public void initialize() {
+        //initializes driving motors
         frontLeftMotor = hardwareMap.get(DcMotor.class, "frontLeftMotor");
         frontRightMotor = hardwareMap.get(DcMotor.class, "frontRightMotor");
         backLeftMotor = hardwareMap.get(DcMotor.class, "backLeftMotor");
         backRightMotor = hardwareMap.get(DcMotor.class, "backRightMotor");
+
+        //initializes servos; CHECK: Did I do this right :D
+        rightLauncher = hardwareMap.get(Servo.class, "rightLauncher");
+        leftLauncher = hardwareMap.get(Servo.class, "leftLauncher");
 
         //to set initial motor power
         frontLeftMotor.setPower(0);
         frontRightMotor.setPower(0);
         backLeftMotor.setPower(0);
         backRightMotor.setPower(0);
+
+        //CHECK I feel like this is wrooonggg
+        //Does it need to be public? Does it need to be static?
+        //Also what does the number represent and what should be there\
+        //It's like ticks per second but like what does that meannnn
+
 
         // set motor mode
         frontLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); //...RunMode.RUN_TO_POSITION - for autonomous when you want to use encoder positions

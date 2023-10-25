@@ -4,7 +4,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo; // CHECK: Is this ok to import
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 
@@ -19,8 +19,8 @@ public class RobotHardware {
     public DcMotor backRightMotor;
 
     //servos for airplane launch
-    public Servo rightLauncher; //CHECK: are these correct declarations
-    public Servo leftLauncher;
+    public CRServo rightLauncher;
+    public CRServo leftLauncher;
 
 
     //what does this do?
@@ -39,15 +39,23 @@ public class RobotHardware {
         backLeftMotor = hardwareMap.get(DcMotor.class, "backLeftMotor");
         backRightMotor = hardwareMap.get(DcMotor.class, "backRightMotor");
 
-        //initializes servos; CHECK: Did I do this right :D
-        rightLauncher = hardwareMap.get(Servo.class, "rightLauncher");
-        leftLauncher = hardwareMap.get(Servo.class, "leftLauncher");
+        //initializes servos
+        CRServo rightLauncher = hardwareMap.get(CRServo.class, "rightLauncher");
+        CRServo leftLauncher = hardwareMap.get(CRServo.class, "leftLauncher");
 
         //to set initial motor power
         frontLeftMotor.setPower(0);
         frontRightMotor.setPower(0);
         backLeftMotor.setPower(0);
         backRightMotor.setPower(0);
+
+        //set servo direction
+        rightLauncher.setDirection(CRServo.Direction.FORWARD);
+        leftLauncher.setDirection(CRServo.Direction.REVERSE);
+
+        rightLauncher.setPower(0);
+        leftLauncher.setPower(0);
+
 
         //CHECK I feel like this is wrooonggg
         //Does it need to be public? Does it need to be static?
@@ -116,4 +124,27 @@ public class RobotHardware {
         robotCentricDrive(rotX, rotY, rx);
 
     }
+
+    public void airplaneLauncher () {
+
+        //spinSeconds- how long (in milliseconds) launchers will spin; launchPower- how fast/powerful the launchers will be
+        int spinSeconds = 2000;
+        double launchPower = 0.5;
+        //2 rotations
+
+
+        //sets power to servos for how fast to be spinning when launch occurs
+        rightLauncher.setPower(launchPower);
+        leftLauncher.setPower(launchPower);
+
+        //waits for how long launch will be
+        wait(spinSeconds);
+
+        //stops launchers/servos
+        rightLauncher.setPower(0);
+        leftLauncher.setPower(0);
+
+    }
+    //NOTE: make function to fully stop the robot whatever it's doing
+
 } // class RobotHardware

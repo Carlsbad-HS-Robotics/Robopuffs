@@ -48,8 +48,15 @@ public class RobopuffsTestTeleOp extends LinearOpMode {
         runtime.reset();
 
         // run until the end of the match (driver presses STOP)
+        //gamepad1 is for robot movement/relocation
+        //gamepad2 is for controlling the arm & airplane launcher
         while (opModeIsActive()) {
             roboHardware.robotCentricDrive(gamepad1.left_stick_x,gamepad1.left_stick_y,gamepad1.right_stick_x);
+
+            if (gamepad2.a) {
+                roboHardware.airplaneLauncher();
+            }
+
         }
     }
 }

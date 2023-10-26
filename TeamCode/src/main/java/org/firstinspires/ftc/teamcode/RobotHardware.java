@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 public class RobotHardware {
 
@@ -94,6 +95,7 @@ public class RobotHardware {
 
     } //init function
 
+    //Robot centric drive; currently the drive we're using
     public void robotCentricDrive (double x, double y, double rx) {
 
         // Denominator is the largest motor power (absolute value) or 1
@@ -112,6 +114,7 @@ public class RobotHardware {
         backRightMotor.setPower(backRightPower);
     }
 
+    //Field centric drive; Not currently in use
     public void fieldCentricDrive (double x, double y, double rx) {
 
         // Read inverse IMU heading, as the IMU heading is CW positive
@@ -125,26 +128,44 @@ public class RobotHardware {
 
     }
 
-    public void airplaneLauncher () {
+    //spins servos to launch paper airplane
+    public void airplaneLauncher (LinearOpMode teleop) {
 
-        //spinSeconds- how long (in milliseconds) launchers will spin; launchPower- how fast/powerful the launchers will be
-        int spinSeconds = 2000;
+        //stops robot & displays status on driver hub
+        stopAll();
+        teleop.telemetry.addData("Status: ", "Launching airplane");
+        teleop.telemetry.update();
+
+        ElapsedTime spinTimer = new ElapsedTime();
+
+        //how long & how fast servos spin
+        int spinSeconds = 2 * 1000;
         double launchPower = 0.5;
-        //2 rotations
-
 
         //sets power to servos for how fast to be spinning when launch occurs
         rightLauncher.setPower(launchPower);
         leftLauncher.setPower(launchPower);
 
-        //waits for how long launch will be
-        wait(spinSeconds);
+        //lets servos spin for however long needed
+        while ((spinTimer.milliseconds() < spinSeconds) && teleop.opModeIsActive())  {
+            ;
+        }
 
         //stops launchers/servos
         rightLauncher.setPower(0);
         leftLauncher.setPower(0);
 
     }
-    //NOTE: make function to fully stop the robot whatever it's doing
+
+    //Stops the robot whatever it's doing
+    public void stopAll() {
+        frontLeftMotor.setPower(0);
+        frontRightMotor.setPower(0);
+        backLeftMotor.setPower(0);
+        backRightMotor.setPower(0);
+
+        rightLauncher.setPower(0);
+        leftLauncher.setPower(0);
+    }
 
 } // class RobotHardware

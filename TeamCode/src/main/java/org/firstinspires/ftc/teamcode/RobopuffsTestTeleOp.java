@@ -34,6 +34,13 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp(name="Test TeleOp", group="Test Group")
+
+
+
+
+
+
+
 //@Disabled //Comment out @Disabled to make opmode available
 public class RobopuffsTestTeleOp extends LinearOpMode {
 
@@ -54,7 +61,7 @@ public class RobopuffsTestTeleOp extends LinearOpMode {
             roboHardware.robotCentricDrive(gamepad1.left_stick_x,gamepad1.left_stick_y,gamepad1.right_stick_x);
 
             if (gamepad2.a) {
-                roboHardware.airplaneLauncher();
+                roboHardware.airplaneLauncher(this);
             }
 
         }

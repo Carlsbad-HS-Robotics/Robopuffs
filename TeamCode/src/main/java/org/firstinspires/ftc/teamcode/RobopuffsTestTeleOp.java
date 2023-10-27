@@ -60,8 +60,12 @@ public class RobopuffsTestTeleOp extends LinearOpMode {
         while (opModeIsActive()) {
             roboHardware.robotCentricDrive(gamepad1.left_stick_x,gamepad1.left_stick_y,gamepad1.right_stick_x);
 
-            if (gamepad2.a) {
+            if (gamepad2.x) {
                 roboHardware.airplaneLauncher(this);
+            }
+
+            if (gamepad2.y) {
+                roboHardware.hoistBot(this);
             }
 
         }

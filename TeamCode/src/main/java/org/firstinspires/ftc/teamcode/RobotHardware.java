@@ -13,44 +13,63 @@ public class RobotHardware {
 
     //defines hardware pieces
     public ElapsedTime runtime = new ElapsedTime();
-    //motors:
+    //drive motors:
     public DcMotor frontLeftMotor;
     public DcMotor frontRightMotor;
     public DcMotor backLeftMotor;
     public DcMotor backRightMotor;
 
+    //hoist motor
+    public DcMotor hoistMotor;
+
     //servos for airplane launch
     public CRServo rightLauncher;
     public CRServo leftLauncher;
 
-
     //what does this do?
     private BNO055IMU imu;
     public HardwareMap hardwareMap;
-    final double launchSpeed =  0.02 ;
 
     public RobotHardware (HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;
     }
 
     public void initialize() {
-        //initializes driving motors
+
+        //DRIVE MOTORS
         frontLeftMotor = hardwareMap.get(DcMotor.class, "frontLeftMotor");
         frontRightMotor = hardwareMap.get(DcMotor.class, "frontRightMotor");
         backLeftMotor = hardwareMap.get(DcMotor.class, "backLeftMotor");
         backRightMotor = hardwareMap.get(DcMotor.class, "backRightMotor");
 
-        //initializes servos
-        CRServo rightLauncher = hardwareMap.get(CRServo.class, "rightLauncher");
-        CRServo leftLauncher = hardwareMap.get(CRServo.class, "leftLauncher");
-
-        //to set initial motor power
+        //set starting motor power
         frontLeftMotor.setPower(0);
         frontRightMotor.setPower(0);
         backLeftMotor.setPower(0);
         backRightMotor.setPower(0);
 
-        //set servo direction
+        frontLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); //...RunMode.RUN_TO_POSITION - for autonomous when you want to use encoder positions
+        frontRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        //ZeroPowerBehavior: When the power is 0, the robot will not move
+        frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE); //...zeroPowerBehavior.float we want it to stop exactly when set to zero
+        frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        backLeftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        frontLeftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        hoistMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+
+
+        //AIRPLANE LAUNCHER SERVOS
+        CRServo rightLauncher = hardwareMap.get(CRServo.class, "rightLauncher");
+        CRServo leftLauncher = hardwareMap.get(CRServo.class, "leftLauncher");
+
         rightLauncher.setDirection(CRServo.Direction.FORWARD);
         leftLauncher.setDirection(CRServo.Direction.REVERSE);
 
@@ -58,32 +77,12 @@ public class RobotHardware {
         leftLauncher.setPower(0);
 
 
-        //CHECK I feel like this is wrooonggg
-        //Does it need to be public? Does it need to be static?
-        //Also what does the number represent and what should be there\
-        //It's like ticks per second but like what does that meannnn
+        //HOIST MOTOR
+        hoistMotor = hardwareMap.get(DcMotor.class, "hoistMotor");
+        hoistMotor.setPower(0);
+        hoistMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        hoistMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-
-        // set motor mode
-        frontLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); //...RunMode.RUN_TO_POSITION - for autonomous when you want to use encoder positions
-        frontRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-
-        // set motor zeroPowerBehavior, if there is no power, it brakes
-        frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE); //...zeroPowerBehavior.float we want it to stop exactly when set to zero
-        frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        //back motors and the front motors are forward
-        //sets the direction of the wheels
-        backLeftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-        frontLeftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-        backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        //liftArmMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
         // Retrieve the IMU from the hardware map
         imu = hardwareMap.get(BNO055IMU.class, "imu");
@@ -166,6 +165,13 @@ public class RobotHardware {
 
         rightLauncher.setPower(0);
         leftLauncher.setPower(0);
+    }
+
+    //hoists robot up onto truss
+    public void hoistBot(LinearOpMode teleop) {
+
+        //write code to make the motor run as long as needed to extend as little as possibly needed?
+        //if that makes sense
     }
 
 } // class RobotHardware

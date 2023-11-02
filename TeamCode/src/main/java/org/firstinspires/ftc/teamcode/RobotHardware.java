@@ -19,8 +19,8 @@ public class RobotHardware {
     public DcMotor backLeftMotor;
     public DcMotor backRightMotor;
 
-    //hoist motor
-    public DcMotor hoistMotor;
+    //hook motor
+    public DcMotor hookMotor;
 
     //servos for airplane launch
     public CRServo rightLauncher;
@@ -29,6 +29,15 @@ public class RobotHardware {
     //what does this do?
     private BNO055IMU imu;
     public HardwareMap hardwareMap;
+
+    //hook motor positions
+    public static final int STARTPOS = 0;
+    //stored position
+    public static final int EXTENDPOS = 20;
+    //Note: figure out how many ticks to extend; 10 is temporary
+    public static final int LIFTPOS = 10;
+    //motor position when compressed enough to lift robot off the ground
+
 
     public RobotHardware (HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;
@@ -63,7 +72,7 @@ public class RobotHardware {
         frontLeftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        hoistMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        hookMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
 
         //AIRPLANE LAUNCHER SERVOS
@@ -78,10 +87,11 @@ public class RobotHardware {
 
 
         //HOIST MOTOR
-        hoistMotor = hardwareMap.get(DcMotor.class, "hoistMotor");
-        hoistMotor.setPower(0);
-        hoistMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        hoistMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        hookMotor = hardwareMap.get(DcMotor.class, "hoistMotor");
+        hookMotor.setPower(0);
+        hookMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        hookMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        hookMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
         // Retrieve the IMU from the hardware map
@@ -168,10 +178,19 @@ public class RobotHardware {
     }
 
     //hoists robot up onto truss
-    public void hoistBot(LinearOpMode teleop) {
+    public void hookMove(LinearOpMode teleop, int desiredPos) {
 
-        //write code to make the motor run as long as needed to extend as little as possibly needed?
-        //if that makes sense
+        //checks if arm is already extended
+        if (teleop.opModeIsActive()) {
+            //might want to change the power later
+            hookMotor.setTargetPosition(desiredPos);
+            hookMotor.setPower(0.5);
+            hookMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            hookMotor.setPower(0);
+            hookMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
     }
+
+
 
 } // class RobotHardware

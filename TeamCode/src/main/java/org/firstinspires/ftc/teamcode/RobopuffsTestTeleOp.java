@@ -37,13 +37,14 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 //@Disabled //Comment out @Disabled to make opmode available
 public class RobopuffsTestTeleOp extends LinearOpMode {
-
     private ElapsedTime runtime = new ElapsedTime();
 
     @Override
     public void runOpMode() {
         RobotHardware roboHardware = new RobotHardware(hardwareMap);
         roboHardware.initialize();
+        this.telemetry.addData("Status: ", "Initialized");
+        this.telemetry.update();
 
         waitForStart();
         runtime.reset();
@@ -54,11 +55,17 @@ public class RobopuffsTestTeleOp extends LinearOpMode {
         while (opModeIsActive()) {
             roboHardware.robotCentricDrive(gamepad1.left_stick_x,gamepad1.left_stick_y,gamepad1.right_stick_x);
 
+
+            /*
+            //airplane launch
             if (gamepad2.a) {
-                this.telemetry.addData("Status: ", "Launching airplane");
+                this.telemetry.addData("Status: ", "Airplane Launching...");
                 this.telemetry.update();
                 roboHardware.airplaneLauncher(this);
+                this.telemetry.addData("Status: ", "Airplane Launched.");
+                this.telemetry.update();
             }
+
 
             //extend the suspension hook
             if (gamepad2.y) {
@@ -72,6 +79,9 @@ public class RobopuffsTestTeleOp extends LinearOpMode {
             if (gamepad2.b) {
                 roboHardware.hookMove(this, roboHardware.STARTPOS);
             }
+
+
+             */
 
         }
     }

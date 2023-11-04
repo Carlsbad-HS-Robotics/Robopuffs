@@ -22,12 +22,12 @@ public class RobotHardware {
     //hook motor
     public DcMotor hookMotor;
 
+    /*
     //servos for airplane launch
     public CRServo rightLauncher;
     public CRServo leftLauncher;
-
-    //what does this do?
-    private BNO055IMU imu;
+     */
+    //private BNO055IMU imu;
     public HardwareMap hardwareMap;
 
     //hook motor positions
@@ -93,7 +93,7 @@ public class RobotHardware {
         hookMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         hookMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-
+        /*
         // Retrieve the IMU from the hardware map
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -101,7 +101,7 @@ public class RobotHardware {
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
         // Without this, data retrieving from the IMU throws an exception
         imu.initialize(parameters);
-
+         */
     } //init function
 
     //Robot centric drive; currently the drive we're using
@@ -123,6 +123,7 @@ public class RobotHardware {
         backRightMotor.setPower(backRightPower);
     }
 
+    /*
     //Field centric drive; Not currently in use
     public void fieldCentricDrive (double x, double y, double rx) {
 
@@ -138,6 +139,7 @@ public class RobotHardware {
     }
 
     //spins servos to launch paper airplane
+
     public void airplaneLauncher (LinearOpMode teleop) {
         //stops robot & displays status on driver hub
         teleop.telemetry.addData("Status: ", "Launching airplane");
@@ -190,6 +192,7 @@ public class RobotHardware {
         }
     }
 
+     */
 
 
 } // class RobotHardware

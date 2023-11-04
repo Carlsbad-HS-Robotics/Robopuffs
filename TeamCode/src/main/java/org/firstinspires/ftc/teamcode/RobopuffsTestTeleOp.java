@@ -55,6 +55,8 @@ public class RobopuffsTestTeleOp extends LinearOpMode {
             roboHardware.robotCentricDrive(gamepad1.left_stick_x,gamepad1.left_stick_y,gamepad1.right_stick_x);
 
             if (gamepad2.a) {
+                this.telemetry.addData("Status: ", "Launching airplane");
+                this.telemetry.update();
                 roboHardware.airplaneLauncher(this);
             }
 

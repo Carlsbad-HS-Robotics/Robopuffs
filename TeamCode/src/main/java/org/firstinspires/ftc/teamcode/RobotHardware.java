@@ -12,7 +12,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 public class RobotHardware {
 
     //defines hardware pieces
-    public ElapsedTime runtime = new ElapsedTime();
+    //public ElapsedTime runtime = new ElapsedTime();
     //drive motors:
     public DcMotor frontLeftMotor;
     public DcMotor frontRightMotor;
@@ -139,16 +139,15 @@ public class RobotHardware {
 
     //spins servos to launch paper airplane
     public void airplaneLauncher (LinearOpMode teleop) {
-
         //stops robot & displays status on driver hub
-        stopAll();
         teleop.telemetry.addData("Status: ", "Launching airplane");
         teleop.telemetry.update();
+        stopAll();
 
         ElapsedTime spinTimer = new ElapsedTime();
 
         //how long & how fast servos spin
-        int spinSeconds = 2 * 1000;
+        int spinSeconds = 3;
         double launchPower = 0.5;
 
         //sets power to servos for how fast to be spinning when launch occurs
@@ -156,7 +155,7 @@ public class RobotHardware {
         leftLauncher.setPower(launchPower);
 
         //lets servos spin for however long needed
-        while ((spinTimer.milliseconds() < spinSeconds) && teleop.opModeIsActive())  {
+        while ((spinTimer.seconds() < spinSeconds) && teleop.opModeIsActive())  {
             ;
         }
 

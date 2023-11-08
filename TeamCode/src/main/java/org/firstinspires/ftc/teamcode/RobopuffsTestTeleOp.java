@@ -41,6 +41,7 @@ public class RobopuffsTestTeleOp extends LinearOpMode {
 
     @Override
     public void runOpMode() {
+        this.telemetry.addData("Status: ", "Not Initialized");
         RobotHardware roboHardware = new RobotHardware(hardwareMap);
         roboHardware.initialize();
         this.telemetry.addData("Status: ", "Initialized");
@@ -55,8 +56,6 @@ public class RobopuffsTestTeleOp extends LinearOpMode {
         while (opModeIsActive()) {
             roboHardware.robotCentricDrive(gamepad1.left_stick_x,gamepad1.left_stick_y,gamepad1.right_stick_x);
 
-
-            /*
             //airplane launch
             if (gamepad2.a) {
                 this.telemetry.addData("Status: ", "Airplane Launching...");
@@ -80,8 +79,6 @@ public class RobopuffsTestTeleOp extends LinearOpMode {
                 roboHardware.hookMove(this, roboHardware.STARTPOS);
             }
 
-
-             */
 
         }
     }

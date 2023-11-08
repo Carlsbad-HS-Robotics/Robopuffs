@@ -22,12 +22,11 @@ public class RobotHardware {
     //hook motor
     public DcMotor hookMotor;
 
-    /*
+
     //servos for airplane launch
     public CRServo rightLauncher;
     public CRServo leftLauncher;
-     */
-    //private BNO055IMU imu;
+    private BNO055IMU imu;
     public HardwareMap hardwareMap;
 
     //hook motor positions
@@ -123,7 +122,7 @@ public class RobotHardware {
         backRightMotor.setPower(backRightPower);
     }
 
-    /*
+
     //Field centric drive; Not currently in use
     public void fieldCentricDrive (double x, double y, double rx) {
 
@@ -191,8 +190,6 @@ public class RobotHardware {
             hookMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
     }
-
-     */
 
 
 } // class RobotHardware

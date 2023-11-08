@@ -26,7 +26,7 @@ public class RobotHardware {
     //servos for airplane launch
     public CRServo rightLauncher;
     public CRServo leftLauncher;
-    private BNO055IMU imu;
+    //private BNO055IMU imu;
     public HardwareMap hardwareMap;
 
     //hook motor positions
@@ -71,12 +71,11 @@ public class RobotHardware {
         frontLeftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        hookMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
 
         //AIRPLANE LAUNCHER SERVOS
-        CRServo rightLauncher = hardwareMap.get(CRServo.class, "rightLauncher");
-        CRServo leftLauncher = hardwareMap.get(CRServo.class, "leftLauncher");
+        rightLauncher = hardwareMap.get(CRServo.class, "rightLauncher");
+        leftLauncher = hardwareMap.get(CRServo.class, "leftLauncher");
 
         rightLauncher.setDirection(CRServo.Direction.FORWARD);
         leftLauncher.setDirection(CRServo.Direction.REVERSE);
@@ -86,11 +85,12 @@ public class RobotHardware {
 
 
         //HOIST MOTOR
-        hookMotor = hardwareMap.get(DcMotor.class, "hoistMotor");
+        hookMotor = hardwareMap.get(DcMotor.class, "hookMotor");
         hookMotor.setPower(0);
         hookMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         hookMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         hookMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        hookMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
         /*
         // Retrieve the IMU from the hardware map
@@ -100,7 +100,8 @@ public class RobotHardware {
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
         // Without this, data retrieving from the IMU throws an exception
         imu.initialize(parameters);
-         */
+        */
+
     } //init function
 
     //Robot centric drive; currently the drive we're using
@@ -122,7 +123,7 @@ public class RobotHardware {
         backRightMotor.setPower(backRightPower);
     }
 
-
+    /*
     //Field centric drive; Not currently in use
     public void fieldCentricDrive (double x, double y, double rx) {
 
@@ -136,6 +137,8 @@ public class RobotHardware {
         robotCentricDrive(rotX, rotY, rx);
 
     }
+
+     */
 
     //spins servos to launch paper airplane
 
@@ -152,12 +155,14 @@ public class RobotHardware {
         double launchPower = 0.5;
 
         //sets power to servos for how fast to be spinning when launch occurs
-        rightLauncher.setPower(launchPower);
-        leftLauncher.setPower(launchPower);
+
 
         //lets servos spin for however long needed
         while ((spinTimer.seconds() < spinSeconds) && teleop.opModeIsActive())  {
-            ;
+            teleop.telemetry.addData("Time passed: ", spinTimer.seconds());
+            teleop.telemetry.update();
+            rightLauncher.setPower(launchPower);
+            leftLauncher.setPower(launchPower);
         }
 
         //stops launchers/servos

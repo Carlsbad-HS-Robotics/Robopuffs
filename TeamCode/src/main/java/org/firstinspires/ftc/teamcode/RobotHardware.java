@@ -30,6 +30,7 @@ public class RobotHardware {
     public HardwareMap hardwareMap;
 
     //hook motor positions
+    /*
     public static final int STARTPOS = 0;
     //stored position
     public static final int EXTENDPOS = 20;
@@ -37,6 +38,7 @@ public class RobotHardware {
     public static final int LIFTPOS = 10;
     //motor position when compressed enough to lift robot off the ground
 
+     */
 
     public RobotHardware (HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;
@@ -137,7 +139,6 @@ public class RobotHardware {
         robotCentricDrive(rotX, rotY, rx);
 
     }
-
      */
 
     //spins servos to launch paper airplane
@@ -189,12 +190,15 @@ public class RobotHardware {
         if (teleop.opModeIsActive()) {
             //might want to change the power later
             hookMotor.setTargetPosition(desiredPos);
-            hookMotor.setPower(0.5);
             hookMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            hookMotor.setPower(0);
-            hookMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            hookMotor.setPower(1);
+
+            if (hookMotor.getCurrentPosition() == hookMotor.getTargetPosition()) {
+                hookMotor.setPower(0);
+                hookMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            }
+
         }
     }
-
 
 } // class RobotHardware

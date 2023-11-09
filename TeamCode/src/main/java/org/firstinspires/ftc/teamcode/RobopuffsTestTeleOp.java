@@ -31,6 +31,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp(name="Test TeleOp", group="Test Group")
@@ -49,7 +50,6 @@ public class RobopuffsTestTeleOp extends LinearOpMode {
 
         waitForStart();
         runtime.reset();
-
         // run until the end of the match (driver presses STOP)
         //gamepad1 is for robot movement/relocation
         //gamepad2 is for controlling the arm & airplane launcher
@@ -67,18 +67,36 @@ public class RobopuffsTestTeleOp extends LinearOpMode {
 
 
             //extend the suspension hook
+            /*
             if (gamepad2.y) {
-                roboHardware.hookMove(this, roboHardware.EXTENDPOS);
+                roboHardware.hookMove(this, 200);
             }
+
+             */
+
+
+
+            if (gamepad2.y) {
+                roboHardware.hookMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+                roboHardware.hookMotor.setPower(5);
+            } else if (gamepad2.x) {
+                roboHardware.hookMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+                roboHardware.hookMotor.setPower(5);
+            } else {
+                roboHardware.hookMotor.setPower(0);
+            }
+
+            /*
             //lift the robot
             if (gamepad2.x) {
-                roboHardware.hookMove(this, roboHardware.LIFTPOS);
+                roboHardware.hookMove(this, 1000);
             }
             //store the suspension hook
             if (gamepad2.b) {
-                roboHardware.hookMove(this, roboHardware.STARTPOS);
+                roboHardware.hookMove(this, 0);
             }
 
+             */
 
         }
     }

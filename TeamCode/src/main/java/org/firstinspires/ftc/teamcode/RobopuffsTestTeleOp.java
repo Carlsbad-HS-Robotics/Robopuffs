@@ -55,14 +55,22 @@ public class RobopuffsTestTeleOp extends LinearOpMode {
         //gamepad2 is for controlling the arm & airplane launcher
         while (opModeIsActive()) {
             roboHardware.robotCentricDrive(gamepad1.left_stick_x,gamepad1.left_stick_y,gamepad1.right_stick_x);
+            roboHardware.armMovement(gamepad2.right_stick_y);
 
-            //airplane launch
+            //temp airplane launch code
             if (gamepad2.a) {
+                /*
                 this.telemetry.addData("Status: ", "Airplane Launching...");
                 this.telemetry.update();
                 roboHardware.airplaneLauncher(this);
                 this.telemetry.addData("Status: ", "Airplane Launched.");
                 this.telemetry.update();
+                 */
+                roboHardware.rightLauncher.setPower(1);
+                roboHardware.leftLauncher.setPower(1);
+            } else {
+                roboHardware.rightLauncher.setPower(0);
+                roboHardware.leftLauncher.setPower(0);
             }
 
 
@@ -75,13 +83,13 @@ public class RobopuffsTestTeleOp extends LinearOpMode {
              */
 
 
-
+            //temp suspension hook code
             if (gamepad2.y) {
                 roboHardware.hookMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-                roboHardware.hookMotor.setPower(5);
+                roboHardware.hookMotor.setPower(1);
             } else if (gamepad2.x) {
                 roboHardware.hookMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-                roboHardware.hookMotor.setPower(5);
+                roboHardware.hookMotor.setPower(1);
             } else {
                 roboHardware.hookMotor.setPower(0);
             }
@@ -97,6 +105,8 @@ public class RobopuffsTestTeleOp extends LinearOpMode {
             }
 
              */
+
+
 
         }
     }

@@ -22,12 +22,16 @@ public class RobotHardware {
     //hook motor
     public DcMotor hookMotor;
 
-
     //servos for airplane launch
     public CRServo rightLauncher;
     public CRServo leftLauncher;
+
+    //Arm Motor
+    public DcMotor armMotor;
+
     //private BNO055IMU imu;
     public HardwareMap hardwareMap;
+
 
     //hook motor positions
     /*
@@ -79,8 +83,8 @@ public class RobotHardware {
         rightLauncher = hardwareMap.get(CRServo.class, "rightLauncher");
         leftLauncher = hardwareMap.get(CRServo.class, "leftLauncher");
 
-        rightLauncher.setDirection(CRServo.Direction.FORWARD);
-        leftLauncher.setDirection(CRServo.Direction.REVERSE);
+        rightLauncher.setDirection(CRServo.Direction.REVERSE);
+        leftLauncher.setDirection(CRServo.Direction.FORWARD);
 
         rightLauncher.setPower(0);
         leftLauncher.setPower(0);
@@ -93,6 +97,15 @@ public class RobotHardware {
         hookMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         hookMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         hookMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+
+
+        //ARM MOTOR
+        armMotor = hardwareMap.get(DcMotor.class, "armMotor");
+        armMotor.setPower(0);
+        armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        armMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+
 
         /*
         // Retrieve the IMU from the hardware map
@@ -157,14 +170,16 @@ public class RobotHardware {
 
         //sets power to servos for how fast to be spinning when launch occurs
 
+        rightLauncher.setPower(launchPower);
+        leftLauncher.setPower(launchPower);
 
         //lets servos spin for however long needed
         while ((spinTimer.seconds() < spinSeconds) && teleop.opModeIsActive())  {
             teleop.telemetry.addData("Time passed: ", spinTimer.seconds());
             teleop.telemetry.update();
-            rightLauncher.setPower(launchPower);
-            leftLauncher.setPower(launchPower);
+
         }
+
 
         //stops launchers/servos
         rightLauncher.setPower(0);
@@ -198,6 +213,28 @@ public class RobotHardware {
                 hookMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             }
 
+        }
+    }
+
+    public void armMovement (double y) {
+
+        int fullPower = 0.9;
+        int halfPower = 0.4;
+
+        if (y <= .6 && y>0) {
+            //half power forward
+            armMotor.setPower(halfPower);
+        } else if (y > .6) {
+            //full power forward
+            armMotor.setPower(fullPower);
+        } else if (y >= -0.6 && y<0) {
+            //half power backward
+            armMotor.setPower(-halfPower);
+        } else if (y < -0.6) {
+            //full power forward
+            armMotor.setPower(-fullPower);
+        } else {
+            armMotor.setPower(0);
         }
     }
 

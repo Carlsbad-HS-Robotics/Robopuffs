@@ -34,9 +34,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@TeleOp(name="Test TeleOp", group="Test Group")
+@TeleOp(name="Robopuffs TeleOp", group="TeleOps")
 
-//@Disabled //Comment out @Disabled to make opmode available
 public class RobopuffsTestTeleOp extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -57,15 +56,10 @@ public class RobopuffsTestTeleOp extends LinearOpMode {
             roboHardware.robotCentricDrive(gamepad1.left_stick_x,gamepad1.left_stick_y,gamepad1.right_stick_x);
             roboHardware.armMovement(gamepad2.right_stick_y);
 
-            //temp airplane launch code
+
+
+            //airplane launcher test code
             if (gamepad2.a) {
-                /*
-                this.telemetry.addData("Status: ", "Airplane Launching...");
-                this.telemetry.update();
-                roboHardware.airplaneLauncher(this);
-                this.telemetry.addData("Status: ", "Airplane Launched.");
-                this.telemetry.update();
-                 */
                 roboHardware.rightLauncher.setPower(1);
                 roboHardware.leftLauncher.setPower(1);
             } else {
@@ -73,17 +67,13 @@ public class RobopuffsTestTeleOp extends LinearOpMode {
                 roboHardware.leftLauncher.setPower(0);
             }
 
-
-            //extend the suspension hook
-            /*
-            if (gamepad2.y) {
-                roboHardware.hookMove(this, 200);
+            //Extends or compresses hook Motor
+            if (gamepad1.x) {
+                roboHardware.hookMove(this);
             }
 
-             */
-
-
-            //temp suspension hook code
+            //suspension hook test code
+            /*
             if (gamepad2.y) {
                 roboHardware.hookMotor.setDirection(DcMotorSimple.Direction.FORWARD);
                 roboHardware.hookMotor.setPower(1);
@@ -94,17 +84,12 @@ public class RobopuffsTestTeleOp extends LinearOpMode {
                 roboHardware.hookMotor.setPower(0);
             }
 
-            /*
-            //lift the robot
-            if (gamepad2.x) {
-                roboHardware.hookMove(this, 1000);
+            //Returns what position the (left) hook motor is currently at
+            if (gamepad2.left_stick_button) {
+                telemetry.addData("Current HookMotor Pos: ", roboHardware.leftHookMotor.getCurrentPosition());
+                telemetry.update();
             }
-            //store the suspension hook
-            if (gamepad2.b) {
-                roboHardware.hookMove(this, 0);
-            }
-
-             */
+            */
 
 
 

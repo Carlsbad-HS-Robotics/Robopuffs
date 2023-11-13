@@ -5,8 +5,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.hardware.bosch.BNO055IMU;
+//import com.qualcomm.robotcore.util.ElapsedTime;
+//import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 public class RobotHardware {
@@ -19,8 +19,9 @@ public class RobotHardware {
     public DcMotor backLeftMotor;
     public DcMotor backRightMotor;
 
-    //hook motor
-    public DcMotor hookMotor;
+    //hook motors
+    public DcMotor rightHookMotor;
+    public DcMotor leftHookMotor;
 
     //servos for airplane launch
     public CRServo rightLauncher;
@@ -29,20 +30,12 @@ public class RobotHardware {
     //Arm Motor
     public DcMotor armMotor;
 
+    //extend time is 45 secs; multiply by 1000 for millisecond conversion
+    public long extendTime = 1000 * 40;
+    public boolean extendedState = false;
+
     //private BNO055IMU imu;
     public HardwareMap hardwareMap;
-
-
-    //hook motor positions
-    /*
-    public static final int STARTPOS = 0;
-    //stored position
-    public static final int EXTENDPOS = 20;
-    //Note: figure out how many ticks to extend; 10 is temporary
-    public static final int LIFTPOS = 10;
-    //motor position when compressed enough to lift robot off the ground
-
-     */
 
     public RobotHardware (HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;
@@ -90,14 +83,19 @@ public class RobotHardware {
         leftLauncher.setPower(0);
 
 
-        //HOIST MOTOR
-        hookMotor = hardwareMap.get(DcMotor.class, "hookMotor");
-        hookMotor.setPower(0);
-        hookMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        hookMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        hookMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        hookMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-
+        //HOOK MOTOR
+        leftHookMotor = hardwareMap.get(DcMotor.class, "hookMotor");
+        rightHookMotor = hardwareMap.get(DcMotor.class, "hookMotor");
+        leftHookMotor.setPower(0);
+        rightHookMotor.setPower(0);
+        leftHookMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightHookMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftHookMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightHookMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftHookMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightHookMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftHookMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        rightHookMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
         //ARM MOTOR
         armMotor = hardwareMap.get(DcMotor.class, "armMotor");
@@ -138,25 +136,106 @@ public class RobotHardware {
         backRightMotor.setPower(backRightPower);
     }
 
-    /*
-    //Field centric drive; Not currently in use
-    public void fieldCentricDrive (double x, double y, double rx) {
 
-        // Read inverse IMU heading, as the IMU heading is CW positive
-        double botHeading = -imu.getAngularOrientation().firstAngle;
-
-        double rotX = x * Math.cos(botHeading) - y * Math.sin(botHeading);
-        double rotY = x * Math.sin(botHeading) + y * Math.cos(botHeading);
-
-        //Calls non-centric drive but with field centric parameters
-        robotCentricDrive(rotX, rotY, rx);
-
-    }
-     */
 
     //spins servos to launch paper airplane
 
-    public void airplaneLauncher (LinearOpMode teleop) {
+
+
+    //Stops the robot whatever it's doing
+    public void stopAll() {
+        frontLeftMotor.setPower(0);
+        frontRightMotor.setPower(0);
+        backLeftMotor.setPower(0);
+        backRightMotor.setPower(0);
+
+        rightLauncher.setPower(0);
+        leftLauncher.setPower(0);
+    }
+
+    //hoists robot up onto truss
+    public void hookMove(LinearOpMode teleop) {
+
+        teleop.telemetry.addData("Hook Status: ", "Moving...");
+        teleop.telemetry.update();
+
+        if (!extendedState) {
+            //if extended is false, extend & make true
+            leftHookMotor.setPower(1);
+            rightHookMotor.setPower(1);
+            extendedState = true;
+        } else if (extendedState) {
+            //if extended is true, compress & make false
+            leftHookMotor.setPower(-1);
+            rightHookMotor.setPower(-1);
+            extendedState = false;
+        }
+
+        teleop.sleep(extendTime);
+        rightHookMotor.setPower(0);
+        leftHookMotor.setPower(0);
+
+        teleop.telemetry.addData("Hook Status: ", "Completed");
+        teleop.telemetry.update();
+
+        /*
+        //checks if arm is already extended
+        if (teleop.opModeIsActive()) {
+            //might want to change the power later
+            hookMotor.setTargetPosition(desiredPos);
+            hookMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            hookMotor.setPower(1);
+
+            if (hookMotor.getCurrentPosition() == hookMotor.getTargetPosition()) {
+                hookMotor.setPower(0);
+                hookMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            }
+
+        }
+        */
+    }
+
+    public void armMovement (double y) {
+
+        double fullPower = 0.9;
+        double halfPower = 0.4;
+
+        if (y <= .6 && y>0) {
+            //half power forward
+            armMotor.setPower(halfPower);
+        } else if (y > .6) {
+            //full power forward
+            armMotor.setPower(fullPower);
+        } else if (y >= -0.6 && y<0) {
+            //half power backward
+            armMotor.setPower(-halfPower);
+        } else if (y < -0.6) {
+            //full power forward
+            armMotor.setPower(-fullPower);
+        } else {
+            armMotor.setPower(0);
+        }
+    }
+
+    public void airplaneBandLauncher (LinearOpMode teleop) {
+
+        teleop.telemetry.addData("Status: ", "Launching...");
+        teleop.telemetry.update();
+        //stopAll();    ?
+
+        int moveTime = 2;
+
+
+
+
+
+    }
+
+
+
+    //Currently unused code
+    /*
+    public void airplaneSpinLaunch (LinearOpMode teleop) {
         //stops robot & displays status on driver hub
         teleop.telemetry.addData("Status: ", "Launching airplane");
         teleop.telemetry.update();
@@ -187,55 +266,19 @@ public class RobotHardware {
 
     }
 
-    //Stops the robot whatever it's doing
-    public void stopAll() {
-        frontLeftMotor.setPower(0);
-        frontRightMotor.setPower(0);
-        backLeftMotor.setPower(0);
-        backRightMotor.setPower(0);
+    //Field centric drive
+    public void fieldCentricDrive (double x, double y, double rx) {
 
-        rightLauncher.setPower(0);
-        leftLauncher.setPower(0);
+        // Read inverse IMU heading, as the IMU heading is CW positive
+        double botHeading = -imu.getAngularOrientation().firstAngle;
+
+        double rotX = x * Math.cos(botHeading) - y * Math.sin(botHeading);
+        double rotY = x * Math.sin(botHeading) + y * Math.cos(botHeading);
+
+        //Calls non-centric drive but with field centric parameters
+        robotCentricDrive(rotX, rotY, rx);
+
     }
-
-    //hoists robot up onto truss
-    public void hookMove(LinearOpMode teleop, int desiredPos) {
-
-        //checks if arm is already extended
-        if (teleop.opModeIsActive()) {
-            //might want to change the power later
-            hookMotor.setTargetPosition(desiredPos);
-            hookMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            hookMotor.setPower(1);
-
-            if (hookMotor.getCurrentPosition() == hookMotor.getTargetPosition()) {
-                hookMotor.setPower(0);
-                hookMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            }
-
-        }
-    }
-
-    public void armMovement (double y) {
-
-        int fullPower = 0.9;
-        int halfPower = 0.4;
-
-        if (y <= .6 && y>0) {
-            //half power forward
-            armMotor.setPower(halfPower);
-        } else if (y > .6) {
-            //full power forward
-            armMotor.setPower(fullPower);
-        } else if (y >= -0.6 && y<0) {
-            //half power backward
-            armMotor.setPower(-halfPower);
-        } else if (y < -0.6) {
-            //full power forward
-            armMotor.setPower(-fullPower);
-        } else {
-            armMotor.setPower(0);
-        }
-    }
+    */
 
 } // class RobotHardware

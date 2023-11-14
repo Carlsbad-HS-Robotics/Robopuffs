@@ -84,8 +84,8 @@ public class RobotHardware {
 
 
         //HOOK MOTOR
-        leftHookMotor = hardwareMap.get(DcMotor.class, "hookMotor");
-        rightHookMotor = hardwareMap.get(DcMotor.class, "hookMotor");
+        leftHookMotor = hardwareMap.get(DcMotor.class, "leftHookMotor");
+        rightHookMotor = hardwareMap.get(DcMotor.class, "rightHookMotor");
         leftHookMotor.setPower(0);
         rightHookMotor.setPower(0);
         leftHookMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

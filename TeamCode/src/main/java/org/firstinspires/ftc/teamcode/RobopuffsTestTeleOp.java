@@ -41,10 +41,10 @@ public class RobopuffsTestTeleOp extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        this.telemetry.addData("Status: ", "Not Initialized");
+        this.telemetry.addData("Status: ", "TeleOp Not Initialized");
         RobotHardware roboHardware = new RobotHardware(hardwareMap);
         roboHardware.initialize();
-        this.telemetry.addData("Status: ", "Initialized");
+        this.telemetry.addData("Status: ", "TeleOp Initialized");
         this.telemetry.update();
 
         waitForStart();
@@ -68,28 +68,28 @@ public class RobopuffsTestTeleOp extends LinearOpMode {
             }
 
             //Extends or compresses hook Motor
-            if (gamepad1.x) {
-                roboHardware.hookMove(this);
-            }
-
-            //suspension hook test code
             /*
-            if (gamepad2.y) {
-                roboHardware.hookMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-                roboHardware.hookMotor.setPower(1);
-            } else if (gamepad2.x) {
-                roboHardware.hookMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-                roboHardware.hookMotor.setPower(1);
-            } else {
-                roboHardware.hookMotor.setPower(0);
-            }
-
-            //Returns what position the (left) hook motor is currently at
-            if (gamepad2.left_stick_button) {
-                telemetry.addData("Current HookMotor Pos: ", roboHardware.leftHookMotor.getCurrentPosition());
-                telemetry.update();
+            if (gamepad1.x) {
+                this.telemetry.addData("Status: ", "Hook Moving...");
+                this.telemetry.update();
+                roboHardware.hookMove(this);
+                this.telemetry.addData("Status: ", "Hook Moved");
+                this.telemetry.update();
             }
             */
+
+
+
+            if (gamepad1.y) {
+                roboHardware.leftHookMotor.setPower(1);
+                roboHardware.rightHookMotor.setPower(1);
+            } else if (gamepad1.a) {
+                roboHardware.leftHookMotor.setPower(-1);
+                roboHardware.rightHookMotor.setPower(-1);
+            } else {
+                roboHardware.leftHookMotor.setPower(0);
+                roboHardware.rightHookMotor.setPower(0);
+            }
 
 
 

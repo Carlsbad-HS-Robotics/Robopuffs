@@ -70,11 +70,11 @@ public class RobopuffsTestTeleOp extends LinearOpMode {
             }
 
             //Airplane Servo Launcher
-            /*
-            if (gamepad2.a) {
+
+            if (gamepad2.b) {
                 telemetry.addData("Status: ", "Launching airplane...");
                 telemetry.update();
-                roboHardware.airplaneLauncher.setPosition(1.0);
+                roboHardware.airplaneLauncher.setPosition(10.0);
                 telemetry.addData("Status: ", "Airplane Launched");
                 telemetry.update();
             } //Launch the plane
@@ -85,7 +85,6 @@ public class RobopuffsTestTeleOp extends LinearOpMode {
                 telemetry.addData("Status: ", "In Original Position");
                 telemetry.update();
             } //Put the servo back to original position
-             */
 
         }
     }

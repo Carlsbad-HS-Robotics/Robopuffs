@@ -4,10 +4,10 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.CRServo;
 //import com.qualcomm.robotcore.util.ElapsedTime;
 //import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.Servo;
 
 public class RobotHardware {
 
@@ -23,16 +23,14 @@ public class RobotHardware {
     public DcMotor rightHookMotor;
     public DcMotor leftHookMotor;
 
-    //servos for airplane launch
-    public CRServo rightLauncher;
-    public CRServo leftLauncher;
+    //servo for airplane launch
+    public Servo airplaneLauncher;
 
     //Arm Motor
     public DcMotor armMotor;
-
-    //extend time is 45 secs; multiply by 1000 for millisecond conversion
-    public long extendTime = 1000 * 40;
     public boolean extendedState = false;
+
+    public long moveTime = 1;
 
     //private BNO055IMU imu;
     public HardwareMap hardwareMap;
@@ -71,16 +69,9 @@ public class RobotHardware {
         backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
-
-        //AIRPLANE LAUNCHER SERVOS
-        rightLauncher = hardwareMap.get(CRServo.class, "rightLauncher");
-        leftLauncher = hardwareMap.get(CRServo.class, "leftLauncher");
-
-        rightLauncher.setDirection(CRServo.Direction.REVERSE);
-        leftLauncher.setDirection(CRServo.Direction.FORWARD);
-
-        rightLauncher.setPower(0);
-        leftLauncher.setPower(0);
+        //AIRPLANE LAUNCHER
+        airplaneLauncher = hardwareMap.get(Servo.class, "airplaneLauncher");
+        airplaneLauncher.setDirection(Servo.Direction.FORWARD);
 
 
         //HOOK MOTOR
@@ -98,12 +89,37 @@ public class RobotHardware {
         rightHookMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
         //ARM MOTOR
+
         armMotor = hardwareMap.get(DcMotor.class, "armMotor");
         armMotor.setPower(0);
         armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        armMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        armMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
+        //Airplane launcher fails
+        /*
+        rightLauncher = hardwareMap.get(CRServo.class, "rightLauncher");
+        leftLauncher = hardwareMap.get(CRServo.class, "leftLauncher");
+
+        rightLauncher.setDirection(CRServo.Direction.REVERSE);
+        leftLauncher.setDirection(CRServo.Direction.FORWARD);
+
+        rightLauncher.setPower(0);
+        leftLauncher.setPower(0);
+
+
+        rightLauncher = hardwareMap.get(DcMotor.class, "rightLauncher");
+        rightLauncher.setPower(0);
+        rightLauncher.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightLauncher.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightLauncher.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        leftLauncher = hardwareMap.get(DcMotor.class, "leftLauncher");
+        leftLauncher.setPower(0);
+        leftLauncher.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        leftLauncher.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftLauncher.setDirection(DcMotorSimple.Direction.FORWARD);
+        */
 
         /*
         // Retrieve the IMU from the hardware map
@@ -117,7 +133,7 @@ public class RobotHardware {
 
     } //init function
 
-    //Robot centric drive; currently the drive we're using
+
     public void robotCentricDrive (double x, double y, double rx) {
 
         // Denominator is the largest motor power (absolute value) or 1
@@ -134,29 +150,18 @@ public class RobotHardware {
         frontRightMotor.setPower(frontRightPower);
         backLeftMotor.setPower(backLeftPower);
         backRightMotor.setPower(backRightPower);
-    }
+    } //Robot centric drive
 
-
-
-    //spins servos to launch paper airplane
-
-
-
-    //Stops the robot whatever it's doing
     public void stopAll() {
         frontLeftMotor.setPower(0);
         frontRightMotor.setPower(0);
         backLeftMotor.setPower(0);
         backRightMotor.setPower(0);
+    } //Stops all motors/servos
 
-        rightLauncher.setPower(0);
-        leftLauncher.setPower(0);
-    }
-
-    //hoists robot up onto truss
     public void hookMove(LinearOpMode teleop) {
 
-        teleop.telemetry.addData("Hook Status: ", "Moving...");
+        teleop.telemetry.addData("Hook: ", "Moving...");
         teleop.telemetry.update();
 
         if (!extendedState) {
@@ -171,11 +176,11 @@ public class RobotHardware {
             extendedState = false;
         }
 
-        teleop.sleep(extendTime);
+        teleop.sleep(moveTime);
         rightHookMotor.setPower(0);
         leftHookMotor.setPower(0);
 
-        teleop.telemetry.addData("Hook Status: ", "Completed");
+        teleop.telemetry.addData("Hook: ", "Moved");
         teleop.telemetry.update();
 
         /*
@@ -193,7 +198,7 @@ public class RobotHardware {
 
         }
         */
-    }
+    } //Move hoisting hooks
 
     public void armMovement (double y) {
 
@@ -215,57 +220,9 @@ public class RobotHardware {
         } else {
             armMotor.setPower(0);
         }
-    }
+    } //arm movement
 
-    public void airplaneBandLauncher (LinearOpMode teleop) {
-
-        teleop.telemetry.addData("Status: ", "Launching...");
-        teleop.telemetry.update();
-        //stopAll();    ?
-
-        int moveTime = 2;
-
-
-
-
-
-    }
-
-
-
-    //Currently unused code
     /*
-    public void airplaneSpinLaunch (LinearOpMode teleop) {
-        //stops robot & displays status on driver hub
-        teleop.telemetry.addData("Status: ", "Launching airplane");
-        teleop.telemetry.update();
-        stopAll();
-
-        ElapsedTime spinTimer = new ElapsedTime();
-
-        //how long & how fast servos spin
-        int spinSeconds = 3;
-        double launchPower = 0.5;
-
-        //sets power to servos for how fast to be spinning when launch occurs
-
-        rightLauncher.setPower(launchPower);
-        leftLauncher.setPower(launchPower);
-
-        //lets servos spin for however long needed
-        while ((spinTimer.seconds() < spinSeconds) && teleop.opModeIsActive())  {
-            teleop.telemetry.addData("Time passed: ", spinTimer.seconds());
-            teleop.telemetry.update();
-
-        }
-
-
-        //stops launchers/servos
-        rightLauncher.setPower(0);
-        leftLauncher.setPower(0);
-
-    }
-
     //Field centric drive
     public void fieldCentricDrive (double x, double y, double rx) {
 
@@ -279,6 +236,6 @@ public class RobotHardware {
         robotCentricDrive(rotX, rotY, rx);
 
     }
-    */
+    */ //field centric drive
 
 } // class RobotHardware

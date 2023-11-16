@@ -31,7 +31,6 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp(name="Robopuffs TeleOp", group="TeleOps")
@@ -56,42 +55,37 @@ public class RobopuffsTestTeleOp extends LinearOpMode {
             roboHardware.robotCentricDrive(gamepad1.left_stick_x,gamepad1.left_stick_y,gamepad1.right_stick_x);
             roboHardware.armMovement(gamepad2.right_stick_y);
 
-
-
-            //airplane launcher test code
-            if (gamepad2.a) {
-                roboHardware.rightLauncher.setPower(1);
-                roboHardware.leftLauncher.setPower(1);
-            } else {
-                roboHardware.rightLauncher.setPower(0);
-                roboHardware.leftLauncher.setPower(0);
-            }
-
-            //Extends or compresses hook Motor
-            /*
-            if (gamepad1.x) {
-                this.telemetry.addData("Status: ", "Hook Moving...");
-                this.telemetry.update();
-                roboHardware.hookMove(this);
-                this.telemetry.addData("Status: ", "Hook Moved");
-                this.telemetry.update();
-            }
-            */
-
-
-
-            if (gamepad1.y) {
-                roboHardware.leftHookMotor.setPower(1);
-                roboHardware.rightHookMotor.setPower(1);
-            } else if (gamepad1.a) {
-                roboHardware.leftHookMotor.setPower(-1);
-                roboHardware.rightHookMotor.setPower(-1);
-            } else {
-                roboHardware.leftHookMotor.setPower(0);
+            //Hoist Hooks
+            if (gamepad2.y) {
+                roboHardware.rightHookMotor.setPower(1.0);
+                roboHardware.leftHookMotor.setPower(1.0);
+            } //UP
+            else if (gamepad2.a) {
+                roboHardware.rightHookMotor.setPower(-1.0);
+                roboHardware.leftHookMotor.setPower(-1.0);
+            } //DOWN
+            else {
                 roboHardware.rightHookMotor.setPower(0);
+                roboHardware.leftHookMotor.setPower(0);
             }
 
-
+            //Airplane Servo Launcher
+            /*
+            if (gamepad2.a) {
+                telemetry.addData("Status: ", "Launching airplane...");
+                telemetry.update();
+                roboHardware.airplaneLauncher.setPosition(1.0);
+                telemetry.addData("Status: ", "Airplane Launched");
+                telemetry.update();
+            } //Launch the plane
+            else if (gamepad2.x) {
+                telemetry.addData("Status: " , "Reverting...");
+                telemetry.update();
+                roboHardware.airplaneLauncher.setPosition(0);
+                telemetry.addData("Status: ", "In Original Position");
+                telemetry.update();
+            } //Put the servo back to original position
+             */
 
         }
     }

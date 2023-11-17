@@ -80,7 +80,7 @@ public class RobopuffsTestTeleOp extends LinearOpMode {
             else {
                 roboHardware.leftHookMotor.setPower(0);
             }
-            */
+            */ //Individual Hook Movement
 
             //Both Hoist Hooks
             if (gamepad2.y) {
@@ -96,25 +96,28 @@ public class RobopuffsTestTeleOp extends LinearOpMode {
             else {
                 roboHardware.rightHookMotor.setPower(0);
                 roboHardware.leftHookMotor.setPower(0);
-
             }
 
-
-            //Airplane Servo Launcher
             if (gamepad2.b) {
                 roboHardware.airplaneLauncher.setPosition(0.6);
-                telemetry.addData("Servo: ", "Preset");
-                telemetry.update();
-            } //Launch the plane
-            else if (gamepad2.x) {
+                sleep(1000);
                 roboHardware.airplaneLauncher.setPosition(0);
-                telemetry.addData("Servo: ", "Set Off");
-                telemetry.update();
-            } //Put the servo back to original position
+                sleep(1000);
+                roboHardware.airplaneLauncher.setPosition(0.6);
+                //Now automatically presets
 
-            if (gamepad1.right_bumper) {
-                roboHardware.autoDrive();
-            }
+            } //Launch Paper Airplane
+
+
+            /*
+            Lunch meeting goals:
+
+            1. Autonomous psuhes something or does literally anything
+            Note: It is by time, not encoder
+            2. Hook hoist thing
+            How long will it take for the hooks to go all the way up?
+            3. How to turn with auto
+             */ //Lunch notes
 
         }
     }

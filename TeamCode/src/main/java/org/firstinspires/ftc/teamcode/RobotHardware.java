@@ -28,7 +28,7 @@ public class RobotHardware {
 
     //Arm Motor
     public DcMotor armMotor;
-    public boolean extendedState = false;
+    public static boolean extendedState = false;
 
     public long moveTime = 1;
 
@@ -96,31 +96,6 @@ public class RobotHardware {
         armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         armMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
-        //Airplane launcher fails
-        /*
-        rightLauncher = hardwareMap.get(CRServo.class, "rightLauncher");
-        leftLauncher = hardwareMap.get(CRServo.class, "leftLauncher");
-
-        rightLauncher.setDirection(CRServo.Direction.REVERSE);
-        leftLauncher.setDirection(CRServo.Direction.FORWARD);
-
-        rightLauncher.setPower(0);
-        leftLauncher.setPower(0);
-
-
-        rightLauncher = hardwareMap.get(DcMotor.class, "rightLauncher");
-        rightLauncher.setPower(0);
-        rightLauncher.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rightLauncher.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightLauncher.setDirection(DcMotorSimple.Direction.REVERSE);
-
-        leftLauncher = hardwareMap.get(DcMotor.class, "leftLauncher");
-        leftLauncher.setPower(0);
-        leftLauncher.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        leftLauncher.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        leftLauncher.setDirection(DcMotorSimple.Direction.FORWARD);
-        */
-
         /*
         // Retrieve the IMU from the hardware map
         imu = hardwareMap.get(BNO055IMU.class, "imu");
@@ -129,10 +104,9 @@ public class RobotHardware {
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
         // Without this, data retrieving from the IMU throws an exception
         imu.initialize(parameters);
-        */
+        */ //imu code
 
     } //init function
-
 
     public void robotCentricDrive (double x, double y, double rx) {
 
@@ -168,14 +142,13 @@ public class RobotHardware {
             //if extended is false, extend & make true
             leftHookMotor.setPower(1);
             rightHookMotor.setPower(1);
-            extendedState = true;
         } else if (extendedState) {
             //if extended is true, compress & make false
             leftHookMotor.setPower(-1);
             rightHookMotor.setPower(-1);
-            extendedState = false;
         }
 
+        extendedState = !extendedState;
         teleop.sleep(moveTime);
         rightHookMotor.setPower(0);
         leftHookMotor.setPower(0);
@@ -183,21 +156,6 @@ public class RobotHardware {
         teleop.telemetry.addData("Hook: ", "Moved");
         teleop.telemetry.update();
 
-        /*
-        //checks if arm is already extended
-        if (teleop.opModeIsActive()) {
-            //might want to change the power later
-            hookMotor.setTargetPosition(desiredPos);
-            hookMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            hookMotor.setPower(1);
-
-            if (hookMotor.getCurrentPosition() == hookMotor.getTargetPosition()) {
-                hookMotor.setPower(0);
-                hookMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            }
-
-        }
-        */
     } //Move hoisting hooks
 
     public void armMovement (double y) {
@@ -224,19 +182,35 @@ public class RobotHardware {
 
     //AUTONOMOUS FUNCTIONS
 
-    public void autoDrive() {
-        double driveSpeed = 0.6;
+    public void goDrive(double driveSpeed) {
         backLeftMotor.setPower(driveSpeed);
         backRightMotor.setPower(driveSpeed);
         frontLeftMotor.setPower(driveSpeed);
         frontRightMotor.setPower(driveSpeed);
-    } //set drive motors to full power
-    public void autoStop() {
+    } //auto drive
+    public void stopDrive() {
         backLeftMotor.setPower(0);
         backRightMotor.setPower(0);
         frontLeftMotor.setPower(0);
         frontRightMotor.setPower(0);
-    } //stop drive motors
+    } //stop
+
+    public void turnRight(double driveSpeed, LinearOpMode teleop) {
+        backLeftMotor.setPower(driveSpeed);
+        backRightMotor.setPower(-driveSpeed);
+        frontLeftMotor.setPower(driveSpeed);
+        frontRightMotor.setPower(-driveSpeed);
+        teleop.sleep(1300);
+        stopDrive();
+    }
+    public void turnLeft(double driveSpeed, LinearOpMode teleop) {
+        backLeftMotor.setPower(-driveSpeed);
+        backRightMotor.setPower(driveSpeed);
+        frontLeftMotor.setPower(-driveSpeed);
+        frontRightMotor.setPower(driveSpeed);
+        teleop.sleep(1300);
+        stopDrive();
+    }
 
     /*
     //Field centric drive

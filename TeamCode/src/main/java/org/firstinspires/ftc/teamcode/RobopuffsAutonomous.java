@@ -26,13 +26,13 @@ public class RobopuffsAutonomous extends LinearOpMode {
         waitForStart();
         autoTime.reset();
 
-        roboHardware.autoDrive();
-        sleep(1000);
-        roboHardware.autoStop();
-
-        //don't need while active because each thing only runs once each?
-        //auto begins
-
+        roboHardware.goDrive(0.5);
+        sleep(500);
+        roboHardware.stopDrive();
+        roboHardware.turnRight(0.5, this);
+        roboHardware.goDrive(0.5);
+        sleep(500);
+        roboHardware.stopDrive();
 
 
     }

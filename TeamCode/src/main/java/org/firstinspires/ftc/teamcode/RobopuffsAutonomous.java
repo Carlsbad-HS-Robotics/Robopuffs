@@ -9,7 +9,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 @Autonomous (name = "Test Autonomous", group = "Autonomous")
-@Disabled
 public class RobopuffsAutonomous extends LinearOpMode {
 
     private ElapsedTime autoTime = new ElapsedTime();
@@ -26,6 +25,10 @@ public class RobopuffsAutonomous extends LinearOpMode {
 
         waitForStart();
         autoTime.reset();
+
+        roboHardware.autoDrive();
+        sleep(1000);
+        roboHardware.autoStop();
 
         //don't need while active because each thing only runs once each?
         //auto begins

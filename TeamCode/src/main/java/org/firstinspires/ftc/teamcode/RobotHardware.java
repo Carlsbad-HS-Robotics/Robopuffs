@@ -222,6 +222,22 @@ public class RobotHardware {
         }
     } //arm movement
 
+    //AUTONOMOUS FUNCTIONS
+
+    public void autoDrive() {
+        double driveSpeed = 0.6;
+        backLeftMotor.setPower(driveSpeed);
+        backRightMotor.setPower(driveSpeed);
+        frontLeftMotor.setPower(driveSpeed);
+        frontRightMotor.setPower(driveSpeed);
+    } //set drive motors to full power
+    public void autoStop() {
+        backLeftMotor.setPower(0);
+        backRightMotor.setPower(0);
+        frontLeftMotor.setPower(0);
+        frontRightMotor.setPower(0);
+    } //stop drive motors
+
     /*
     //Field centric drive
     public void fieldCentricDrive (double x, double y, double rx) {

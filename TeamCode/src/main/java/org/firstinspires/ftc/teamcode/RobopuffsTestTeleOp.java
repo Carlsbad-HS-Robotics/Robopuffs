@@ -55,36 +55,66 @@ public class RobopuffsTestTeleOp extends LinearOpMode {
             roboHardware.robotCentricDrive(gamepad1.left_stick_x,gamepad1.left_stick_y,gamepad1.right_stick_x);
             roboHardware.armMovement(gamepad2.right_stick_y);
 
+            /*
             //Hoist Hooks
             if (gamepad2.y) {
                 roboHardware.rightHookMotor.setPower(1.0);
+
+            } //UP
+            else if (gamepad2.a) {
+                roboHardware.rightHookMotor.setPower(-1.0);
+
+            } //DOWN
+            else {
+                roboHardware.rightHookMotor.setPower(0);
+
+            }
+
+            //left
+            if (gamepad2.dpad_up) {
                 roboHardware.leftHookMotor.setPower(1.0);
+            }
+            else if (gamepad2.dpad_down) {
+                roboHardware.leftHookMotor.setPower(-1.0);
+            }
+            else {
+                roboHardware.leftHookMotor.setPower(0);
+            }
+            */
+
+            //Both Hoist Hooks
+            if (gamepad2.y) {
+                roboHardware.rightHookMotor.setPower(1.0);
+                roboHardware.leftHookMotor.setPower(1.0);
+
             } //UP
             else if (gamepad2.a) {
                 roboHardware.rightHookMotor.setPower(-1.0);
                 roboHardware.leftHookMotor.setPower(-1.0);
+
             } //DOWN
             else {
                 roboHardware.rightHookMotor.setPower(0);
                 roboHardware.leftHookMotor.setPower(0);
+
             }
 
-            //Airplane Servo Launcher
 
+            //Airplane Servo Launcher
             if (gamepad2.b) {
-                telemetry.addData("Status: ", "Launching airplane...");
-                telemetry.update();
-                roboHardware.airplaneLauncher.setPosition(10.0);
-                telemetry.addData("Status: ", "Airplane Launched");
+                roboHardware.airplaneLauncher.setPosition(0.6);
+                telemetry.addData("Servo: ", "Preset");
                 telemetry.update();
             } //Launch the plane
             else if (gamepad2.x) {
-                telemetry.addData("Status: " , "Reverting...");
-                telemetry.update();
                 roboHardware.airplaneLauncher.setPosition(0);
-                telemetry.addData("Status: ", "In Original Position");
+                telemetry.addData("Servo: ", "Set Off");
                 telemetry.update();
             } //Put the servo back to original position
+
+            if (gamepad1.right_bumper) {
+                roboHardware.autoDrive();
+            }
 
         }
     }

@@ -30,7 +30,7 @@ public class RobotHardware {
     public DcMotor armMotor;
     public static boolean extendedState = false;
 
-    public long moveTime = 1;
+    public long moveTime = 5000;
 
     //private BNO055IMU imu;
     public HardwareMap hardwareMap;
@@ -182,11 +182,16 @@ public class RobotHardware {
 
     //AUTONOMOUS FUNCTIONS
 
-    public void goDrive(double driveSpeed) {
+    double driveSpeed = 0.5;
+
+    public void goDrive(LinearOpMode teleop) {
         backLeftMotor.setPower(driveSpeed);
         backRightMotor.setPower(driveSpeed);
         frontLeftMotor.setPower(driveSpeed);
         frontRightMotor.setPower(driveSpeed);
+        teleop.sleep(915);
+        stopDrive();
+
     } //auto drive
     public void stopDrive() {
         backLeftMotor.setPower(0);
@@ -194,21 +199,20 @@ public class RobotHardware {
         frontLeftMotor.setPower(0);
         frontRightMotor.setPower(0);
     } //stop
-
-    public void turnRight(double driveSpeed, LinearOpMode teleop) {
+    public void turnRight(LinearOpMode teleop) {
         backLeftMotor.setPower(driveSpeed);
         backRightMotor.setPower(-driveSpeed);
         frontLeftMotor.setPower(driveSpeed);
         frontRightMotor.setPower(-driveSpeed);
-        teleop.sleep(1300);
+        teleop.sleep(900);
         stopDrive();
     }
-    public void turnLeft(double driveSpeed, LinearOpMode teleop) {
+    public void turnLeft(LinearOpMode teleop) {
         backLeftMotor.setPower(-driveSpeed);
         backRightMotor.setPower(driveSpeed);
         frontLeftMotor.setPower(-driveSpeed);
         frontRightMotor.setPower(driveSpeed);
-        teleop.sleep(1300);
+        teleop.sleep(900);
         stopDrive();
     }
 

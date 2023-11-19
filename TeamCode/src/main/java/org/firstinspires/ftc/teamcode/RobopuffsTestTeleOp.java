@@ -55,6 +55,7 @@ public class RobopuffsTestTeleOp extends LinearOpMode {
             roboHardware.robotCentricDrive(gamepad1.left_stick_x,gamepad1.left_stick_y,gamepad1.right_stick_x);
             roboHardware.armMovement(gamepad2.right_stick_y);
 
+
             /*
             //Hoist Hooks
             if (gamepad2.y) {
@@ -80,9 +81,9 @@ public class RobopuffsTestTeleOp extends LinearOpMode {
             else {
                 roboHardware.leftHookMotor.setPower(0);
             }
-            */ //Individual Hook Movement
 
-            //Both Hoist Hooks
+             */ //Individual Hook Movement
+            /*
             if (gamepad2.y) {
                 roboHardware.rightHookMotor.setPower(1.0);
                 roboHardware.leftHookMotor.setPower(1.0);
@@ -98,9 +99,15 @@ public class RobopuffsTestTeleOp extends LinearOpMode {
                 roboHardware.leftHookMotor.setPower(0);
             }
 
-            if (gamepad2.b) {
+             */ //Both Hoist Hooks
+
+            if (gamepad2.y) {
+                roboHardware.hookMove(this);
+            }
+
+            if (gamepad2.b && !(gamepad2.start)) {
                 roboHardware.airplaneLauncher.setPosition(0.6);
-                sleep(1000);
+                //sleep(1000);
                 roboHardware.airplaneLauncher.setPosition(0);
                 sleep(1000);
                 roboHardware.airplaneLauncher.setPosition(0.6);
@@ -108,16 +115,9 @@ public class RobopuffsTestTeleOp extends LinearOpMode {
 
             } //Launch Paper Airplane
 
-
-            /*
-            Lunch meeting goals:
-
-            1. Autonomous psuhes something or does literally anything
-            Note: It is by time, not encoder
-            2. Hook hoist thing
-            How long will it take for the hooks to go all the way up?
-            3. How to turn with auto
-             */ //Lunch notes
+            if (gamepad1.right_bumper) {
+                roboHardware.goDrive(this);
+            } //Test the auto drive 1 mat
 
         }
     }

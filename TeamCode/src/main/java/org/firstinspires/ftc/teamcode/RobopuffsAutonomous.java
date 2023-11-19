@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
@@ -26,13 +27,21 @@ public class RobopuffsAutonomous extends LinearOpMode {
         waitForStart();
         autoTime.reset();
 
-        roboHardware.goDrive(0.5);
-        sleep(500);
-        roboHardware.stopDrive();
-        roboHardware.turnRight(0.5, this);
-        roboHardware.goDrive(0.5);
-        sleep(500);
-        roboHardware.stopDrive();
+
+        roboHardware.backLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        roboHardware.frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        roboHardware.backRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        roboHardware.frontRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        roboHardware.goDrive(this);
+        sleep(1000);
+        telemetry.addData("Status: ", "Turning right...");
+        roboHardware.turnRight(this);
+        sleep(1000);
+        telemetry.addData("Status: ", "Moving forward...");
+        roboHardware.goDrive(this);
+
+        telemetry.addData("Autonomous: ", "Finished");
 
 
     }

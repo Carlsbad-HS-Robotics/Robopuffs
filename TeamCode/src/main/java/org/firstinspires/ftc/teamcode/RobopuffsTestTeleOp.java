@@ -52,9 +52,8 @@ public class RobopuffsTestTeleOp extends LinearOpMode {
         //gamepad1 is for robot movement/relocation
         //gamepad2 is for controlling the arm & airplane launcher
         while (opModeIsActive()) {
-            roboHardware.robotCentricDrive(gamepad1.left_stick_x,gamepad1.left_stick_y,gamepad1.right_stick_x);
+            roboHardware.robotCentricDrive(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
             roboHardware.armMovement(gamepad2.right_stick_y);
-
 
             /*
             //Hoist Hooks
@@ -114,11 +113,6 @@ public class RobopuffsTestTeleOp extends LinearOpMode {
                 //Now automatically presets
 
             } //Launch Paper Airplane
-
-            if (gamepad1.right_bumper) {
-                roboHardware.goDrive(this);
-            } //Test the auto drive 1 mat
-
         }
     }
 }

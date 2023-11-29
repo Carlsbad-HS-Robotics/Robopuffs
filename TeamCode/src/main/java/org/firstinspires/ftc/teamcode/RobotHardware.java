@@ -119,6 +119,11 @@ public class RobotHardware {
         double frontRightPower = (y + x + rx) / denominator;
         double backRightPower = (y - x + rx) / denominator;
 
+        frontLeftPower = frontLeftPower - (frontLeftPower*0.3);
+        frontRightPower = frontRightPower - (frontRightPower*0.3);
+        backLeftPower = backLeftPower - (backLeftPower*0.3);
+        backRightPower = backRightPower - (backRightPower*0.3);
+
         //Sets power to motors
         frontLeftMotor.setPower(frontLeftPower);
         frontRightMotor.setPower(frontRightPower);
@@ -184,15 +189,15 @@ public class RobotHardware {
 
     double driveSpeed = 0.5;
 
-    public void goDrive(LinearOpMode teleop) {
+    public void goDrive(LinearOpMode teleop, long driveTime) {
         backLeftMotor.setPower(driveSpeed);
         backRightMotor.setPower(driveSpeed);
         frontLeftMotor.setPower(driveSpeed);
         frontRightMotor.setPower(driveSpeed);
-        teleop.sleep(915);
+        teleop.sleep(driveTime);
         stopDrive();
 
-    } //auto drive
+    } //auto drive for x time
     public void stopDrive() {
         backLeftMotor.setPower(0);
         backRightMotor.setPower(0);
@@ -204,7 +209,7 @@ public class RobotHardware {
         backRightMotor.setPower(-driveSpeed);
         frontLeftMotor.setPower(driveSpeed);
         frontRightMotor.setPower(-driveSpeed);
-        teleop.sleep(900);
+        teleop.sleep(830);
         stopDrive();
     }
     public void turnLeft(LinearOpMode teleop) {
@@ -212,7 +217,7 @@ public class RobotHardware {
         backRightMotor.setPower(driveSpeed);
         frontLeftMotor.setPower(-driveSpeed);
         frontRightMotor.setPower(driveSpeed);
-        teleop.sleep(900);
+        teleop.sleep(830);
         stopDrive();
     }
 

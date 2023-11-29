@@ -2,15 +2,13 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
-@Autonomous (name = "Test Autonomous", group = "Autonomous")
-public class RobopuffsAutonomous extends LinearOpMode {
+@Autonomous (name = "Right Far Side Autonomous", group = "Autonomous")
+public class RobopuffsRedAutonomous extends LinearOpMode {
 
     private ElapsedTime autoTime = new ElapsedTime();
 
@@ -33,15 +31,21 @@ public class RobopuffsAutonomous extends LinearOpMode {
         roboHardware.backRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         roboHardware.frontRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
-        roboHardware.goDrive(this);
-        sleep(1000);
-        telemetry.addData("Status: ", "Turning right...");
-        roboHardware.turnRight(this);
-        sleep(1000);
-        telemetry.addData("Status: ", "Moving forward...");
-        roboHardware.goDrive(this);
+        //6 mats
 
-        telemetry.addData("Autonomous: ", "Finished");
+        //1 mat = 915 milliseconds
+        long firstDrive = (915*2+20) ;
+        roboHardware.goDrive(this, firstDrive); //first drive forward
+
+        sleep(1000);
+
+        //Move slightly away from wall? Add code another time
+
+        roboHardware.turnRight(this); //Turn to truss
+
+        sleep(1000);
+
+        roboHardware.goDrive(this, (915*4)); //Move to backstage
 
 
     }

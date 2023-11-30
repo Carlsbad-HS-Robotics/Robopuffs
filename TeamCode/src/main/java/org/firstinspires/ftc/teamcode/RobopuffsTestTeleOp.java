@@ -55,6 +55,24 @@ public class RobopuffsTestTeleOp extends LinearOpMode {
             roboHardware.robotCentricDrive(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
             roboHardware.armMovement(gamepad2.right_stick_y);
 
+            if (gamepad2.right_bumper) {
+                roboHardware.wristServo.setPosition(100);
+            } //Extend wrist
+            else if (gamepad2.left_bumper) {
+                roboHardware.wristServo.setPosition(0);
+            } //Compress wrist
+
+            if (gamepad2.y) {
+                roboHardware.hookMove(this);
+            } //Hook Extension; Compression
+            if (gamepad2.b && !(gamepad2.start)) {
+                telemetry.addData("Airplane: ", "Launching...");
+                telemetry.update();
+                roboHardware.launchAirplane(this);
+                telemetry.addData("Airplane: ", "Launched");
+                telemetry.update();
+            } //Launch Paper Airplane
+
             /*
             //Hoist Hooks
             if (gamepad2.y) {
@@ -99,20 +117,6 @@ public class RobopuffsTestTeleOp extends LinearOpMode {
             }
 
              */ //Both Hoist Hooks
-
-            if (gamepad2.y) {
-                roboHardware.hookMove(this);
-            }
-
-            if (gamepad2.b && !(gamepad2.start)) {
-                roboHardware.airplaneLauncher.setPosition(0.6);
-                //sleep(1000);
-                roboHardware.airplaneLauncher.setPosition(0);
-                sleep(1000);
-                roboHardware.airplaneLauncher.setPosition(0.6);
-                //Now automatically presets
-
-            } //Launch Paper Airplane
         }
     }
 }

@@ -30,7 +30,9 @@ public class RobotHardware {
     public DcMotor armMotor;
     public static boolean extendedState = false;
 
-    public long moveTime = 5000;
+    public long moveTime = 5000; //Hook movement time (in milliseconds)
+
+    public Servo wristServo;
 
     //private BNO055IMU imu;
     public HardwareMap hardwareMap;
@@ -89,12 +91,15 @@ public class RobotHardware {
         rightHookMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
         //ARM MOTOR
-
         armMotor = hardwareMap.get(DcMotor.class, "armMotor");
         armMotor.setPower(0);
         armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         armMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        //WRIST SERVO
+        wristServo = hardwareMap.get(Servo.class, "wristServo");
+        wristServo.setDirection(Servo.Direction.FORWARD);
 
         /*
         // Retrieve the IMU from the hardware map
@@ -130,13 +135,6 @@ public class RobotHardware {
         backLeftMotor.setPower(backLeftPower);
         backRightMotor.setPower(backRightPower);
     } //Robot centric drive
-
-    public void stopAll() {
-        frontLeftMotor.setPower(0);
-        frontRightMotor.setPower(0);
-        backLeftMotor.setPower(0);
-        backRightMotor.setPower(0);
-    } //Stops all motors/servos
 
     public void hookMove(LinearOpMode teleop) {
 
@@ -184,6 +182,22 @@ public class RobotHardware {
             armMotor.setPower(0);
         }
     } //arm movement
+
+    public void launchAirplane(LinearOpMode teleop) {
+        airplaneLauncher.setPosition(0.6);
+        //sleep(1000);
+        airplaneLauncher.setPosition(0);
+        teleop.sleep(1000);
+        airplaneLauncher.setPosition(0.6);
+        //Now automatically presets
+    }
+
+    public void stopAll() {
+        frontLeftMotor.setPower(0);
+        frontRightMotor.setPower(0);
+        backLeftMotor.setPower(0);
+        backRightMotor.setPower(0);
+    } //Stops all motors/servos
 
     //AUTONOMOUS FUNCTIONS
 
@@ -235,6 +249,6 @@ public class RobotHardware {
         robotCentricDrive(rotX, rotY, rx);
 
     }
-    */ //field centric drive
+    */ //Field centric drive
 
 } // class RobotHardware

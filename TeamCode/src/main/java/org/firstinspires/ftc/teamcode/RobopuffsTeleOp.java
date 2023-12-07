@@ -35,7 +35,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp(name="Robopuffs TeleOp", group="TeleOps")
 
-public class RobopuffsTestTeleOp extends LinearOpMode {
+public class RobopuffsTeleOp extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
     @Override
@@ -51,30 +51,43 @@ public class RobopuffsTestTeleOp extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
         //gamepad1 is for robot movement/relocation
         //gamepad2 is for controlling the arm & airplane launcher
+
+        roboHardware.wristServo.setPosition(0);
+
         while (opModeIsActive()) {
-            roboHardware.robotCentricDrive(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
-            roboHardware.armMovement(gamepad2.right_stick_y);
+            roboHardware.fieldCentricDrive(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
+            roboHardware.armMovement(gamepad2.left_stick_y);
 
-            if (gamepad2.right_bumper) {
-                roboHardware.wristServo.setPosition(100);
-            } //Extend wrist
-            else if (gamepad2.left_bumper) {
+            if (gamepad1.a) {
+                roboHardware.clawGrab();
+            }
+
+            if (gamepad2.a) {
+                roboHardware.wristMovement(this);
+            } //Wrist in-game movement
+
+            if (gamepad2.left_trigger > 0) {
                 roboHardware.wristServo.setPosition(0);
-            } //Compress wrist
+                roboHardware.spitefulBooleans();
+            } //set to 0
+            else if (gamepad2.right_trigger > 0) {
+                roboHardware.wristServo.setPosition(1);
+                roboHardware.spitefulBooleans();
+            } //set to 1
 
-            if (gamepad2.y) {
+            if (gamepad1.y) {
                 roboHardware.hookMove(this);
-            } //Hook Extension; Compression
-            if (gamepad2.b && !(gamepad2.start)) {
+            } //Hook: 1Y
+            if (gamepad2.y && !(gamepad2.dpad_up)) {
                 telemetry.addData("Airplane: ", "Launching...");
                 telemetry.update();
                 roboHardware.launchAirplane(this);
                 telemetry.addData("Airplane: ", "Launched");
                 telemetry.update();
-            } //Launch Paper Airplane
+            } //Airplane: 2Y
 
+            //Non-static/ preset Hook movement
             /*
-            //Hoist Hooks
             if (gamepad2.y) {
                 roboHardware.rightHookMotor.setPower(1.0);
 
@@ -99,7 +112,7 @@ public class RobopuffsTestTeleOp extends LinearOpMode {
                 roboHardware.leftHookMotor.setPower(0);
             }
 
-             */ //Individual Hook Movement
+            */ //Individual Hook Movement
             /*
             if (gamepad2.y) {
                 roboHardware.rightHookMotor.setPower(1.0);

@@ -31,12 +31,10 @@ public class RobopuffsRedAutonomous extends LinearOpMode {
         roboHardware.backRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         roboHardware.frontRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
-        //6 mats
 
         //1 mat = 915 milliseconds
         long firstDrive = (915*2+20) ;
         roboHardware.goDrive(this, firstDrive); //first drive forward
-
         sleep(1000);
 
         //Move slightly away from wall? Add code another time

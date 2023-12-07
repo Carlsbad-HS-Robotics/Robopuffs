@@ -5,14 +5,17 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 //import com.qualcomm.robotcore.util.ElapsedTime;
-//import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.robotcore.hardware.IMU;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class RobotHardware {
 
-    //defines hardware pieces
     //public ElapsedTime runtime = new ElapsedTime();
+
     //drive motors:
     public DcMotor frontLeftMotor;
     public DcMotor frontRightMotor;
@@ -28,13 +31,18 @@ public class RobotHardware {
 
     //Arm Motor
     public DcMotor armMotor;
-    public static boolean extendedState = false;
+    public static int extendedState = 3;
 
     public long moveTime = 5000; //Hook movement time (in milliseconds)
 
     public Servo wristServo;
+    public static boolean wristState = true;
+    public static boolean clawClenched = false;
+    public Servo leftClaw;
 
-    //private BNO055IMU imu;
+    public Servo rightClaw;
+
+    public IMU imu;
     public HardwareMap hardwareMap;
 
     public RobotHardware (HardwareMap hardwareMap) {
@@ -100,18 +108,42 @@ public class RobotHardware {
         //WRIST SERVO
         wristServo = hardwareMap.get(Servo.class, "wristServo");
         wristServo.setDirection(Servo.Direction.FORWARD);
+        wristServo.scaleRange(0.05, 0.6);
 
-        /*
+        //CLAW SERVOS
+        leftClaw = hardwareMap.get(Servo.class, "leftClaw");
+        leftClaw.setDirection(Servo.Direction.FORWARD);
+        //leftClaw.scaleRange(0.2, 0.6);
+
+        rightClaw = hardwareMap.get(Servo.class, "rightClaw");
+        rightClaw.setDirection(Servo.Direction.REVERSE);
+        //rightClaw.scaleRange(0.2, 0.6);
+
         // Retrieve the IMU from the hardware map
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        // Technically this is the default, however specifying it is clearer
-        parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
-        // Without this, data retrieving from the IMU throws an exception
-        imu.initialize(parameters);
-        */ //imu code
+        imu = hardwareMap.get(IMU.class, "imu");
+        RevHubOrientationOnRobot.LogoFacingDirection logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.UP;
+        RevHubOrientationOnRobot.UsbFacingDirection  usbDirection  = RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD;
+        RevHubOrientationOnRobot orientationOnRobot = new RevHubOrientationOnRobot(logoDirection, usbDirection);
+        // Now initialize the IMU with this mounting orientation
+        // Note: if you choose two conflicting directions, this initialization will cause a code exception.
+        imu.initialize(new IMU.Parameters(orientationOnRobot));
 
     } //init function
+
+    public void fieldCentricDrive (double x, double y, double rx) {
+
+        // Read inverse IMU heading, as the IMU heading is CW positive
+        YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
+
+        double botHeading = orientation.getYaw(AngleUnit.DEGREES);
+
+        double rotX = x * Math.cos(botHeading) - y * Math.sin(botHeading);
+        double rotY = x * Math.sin(botHeading) + y * Math.cos(botHeading);
+
+        //Calls non-centric drive but with field centric parameters
+        robotCentricDrive(rotX, rotY, rx);
+
+    }
 
     public void robotCentricDrive (double x, double y, double rx) {
 
@@ -134,27 +166,32 @@ public class RobotHardware {
         frontRightMotor.setPower(frontRightPower);
         backLeftMotor.setPower(backLeftPower);
         backRightMotor.setPower(backRightPower);
-    } //Robot centric drive
+    }
 
     public void hookMove(LinearOpMode teleop) {
 
         teleop.telemetry.addData("Hook: ", "Moving...");
         teleop.telemetry.update();
 
-        if (!extendedState) {
-            //if extended is false, extend & make true
+        if (extendedState == 1) {
             leftHookMotor.setPower(1);
             rightHookMotor.setPower(1);
-        } else if (extendedState) {
-            //if extended is true, compress & make false
+            teleop.sleep(moveTime);
+        }  //If it's fully compressed
+        else if (extendedState == 2 || extendedState == 3) {
             leftHookMotor.setPower(-1);
             rightHookMotor.setPower(-1);
-        }
+            teleop.sleep(moveTime/2);
 
-        extendedState = !extendedState;
-        teleop.sleep(moveTime);
+            if (extendedState == 3) {
+                extendedState = 0;
+            }
+        } //If it's extended fully or halfway
+
         rightHookMotor.setPower(0);
         leftHookMotor.setPower(0);
+
+        extendedState++;
 
         teleop.telemetry.addData("Hook: ", "Moved");
         teleop.telemetry.update();
@@ -192,12 +229,40 @@ public class RobotHardware {
         //Now automatically presets
     }
 
-    public void stopAll() {
-        frontLeftMotor.setPower(0);
-        frontRightMotor.setPower(0);
-        backLeftMotor.setPower(0);
-        backRightMotor.setPower(0);
-    } //Stops all motors/servos
+    public void wristMovement(LinearOpMode teleop) {
+
+        if (wristState) {
+            wristServo.setPosition(0.6);
+            teleop.telemetry.addData("Claw Position: ", "Pixel Pickup");
+        }  //If it's in pickup position
+        else if (!wristState) {
+            wristServo.setPosition(1);
+            teleop.telemetry.addData("Claw Position: ", "Pixel Placing");
+        } //If it's in board position
+
+        wristState = !wristState;
+        teleop.telemetry.update();
+
+    }
+
+    public void spitefulBooleans() {
+        wristState = false;
+    }
+
+    public void clawGrab() {
+
+        if (clawClenched) {
+            leftClaw.setPosition(0.5);
+            rightClaw.setPosition(0.5);
+        }
+        else if (!clawClenched) {
+            leftClaw.setPosition(0.7);
+            rightClaw.setPosition(0.7);
+        }
+
+        clawClenched = !clawClenched;
+
+    }
 
     //AUTONOMOUS FUNCTIONS
 
@@ -235,20 +300,7 @@ public class RobotHardware {
         stopDrive();
     }
 
-    /*
     //Field centric drive
-    public void fieldCentricDrive (double x, double y, double rx) {
 
-        // Read inverse IMU heading, as the IMU heading is CW positive
-        double botHeading = -imu.getAngularOrientation().firstAngle;
-
-        double rotX = x * Math.cos(botHeading) - y * Math.sin(botHeading);
-        double rotY = x * Math.sin(botHeading) + y * Math.cos(botHeading);
-
-        //Calls non-centric drive but with field centric parameters
-        robotCentricDrive(rotX, rotY, rx);
-
-    }
-    */ //Field centric drive
 
 } // class RobotHardware

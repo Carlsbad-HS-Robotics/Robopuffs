@@ -252,12 +252,12 @@ public class RobotHardware {
     public void clawGrab() {
 
         if (clawClenched) {
-            leftClaw.setPosition(0.5);
-            rightClaw.setPosition(0.5);
+            leftClaw.setPosition(0.055);
+            rightClaw.setPosition(0.055);
         }
         else if (!clawClenched) {
-            leftClaw.setPosition(0.7);
-            rightClaw.setPosition(0.7);
+            leftClaw.setPosition(0.08);
+            rightClaw.setPosition(0.08);
         }
 
         clawClenched = !clawClenched;

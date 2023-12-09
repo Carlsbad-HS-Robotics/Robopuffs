@@ -53,6 +53,8 @@ public class RobopuffsTeleOp extends LinearOpMode {
         //gamepad2 is for controlling the arm & airplane launcher
 
         roboHardware.wristServo.setPosition(0);
+        roboHardware.leftClaw.setPosition(0.08);
+        roboHardware.rightClaw.setPosition(0.08);
 
         while (opModeIsActive()) {
             roboHardware.fieldCentricDrive(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
@@ -60,6 +62,10 @@ public class RobopuffsTeleOp extends LinearOpMode {
 
             if (gamepad1.a) {
                 roboHardware.clawGrab();
+            }
+
+            if (gamepad1.dpad_up) {
+                roboHardware.wristServo.setPosition(0.5);
             }
 
             if (gamepad2.a) {

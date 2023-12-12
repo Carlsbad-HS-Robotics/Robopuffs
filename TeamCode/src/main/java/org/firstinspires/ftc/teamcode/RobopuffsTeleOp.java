@@ -52,39 +52,48 @@ public class RobopuffsTeleOp extends LinearOpMode {
         //gamepad1 is for robot movement/relocation
         //gamepad2 is for controlling the arm & airplane launcher
 
+        /*
         roboHardware.wristServo.setPosition(0);
         roboHardware.leftClaw.setPosition(0.08);
-        roboHardware.rightClaw.setPosition(0.08);
+        roboHardware.rightClaw.setPosition(0.09);
+
+         */
 
         while (opModeIsActive()) {
             roboHardware.fieldCentricDrive(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
             roboHardware.armMovement(gamepad2.left_stick_y);
 
-            if (gamepad1.a) {
-                roboHardware.clawGrab();
-            }
+            if (gamepad2.left_bumper) {
+                roboHardware.wristServo.setPosition(1);
+            }  //If it's in pickup position
+            else if (gamepad2.right_bumper) {
+                roboHardware.wristServo.setPosition(0.55);
+            } //If it's in board position
 
-            if (gamepad1.dpad_up) {
-                roboHardware.wristServo.setPosition(0.5);
-            }
 
-            if (gamepad2.a) {
+            if (gamepad2.a && !(gamepad2.start)) {
+                roboHardware.clawGrab(this);
+            } //claw clench
+
+            /*if (gamepad2.x) {
                 roboHardware.wristMovement(this);
             } //Wrist in-game movement
+
+             */
 
             if (gamepad2.left_trigger > 0) {
                 roboHardware.wristServo.setPosition(0);
                 roboHardware.spitefulBooleans();
-            } //set to 0
+            } //set wrist to 0
             else if (gamepad2.right_trigger > 0) {
                 roboHardware.wristServo.setPosition(1);
                 roboHardware.spitefulBooleans();
-            } //set to 1
+            } //set wrist to 1
 
             if (gamepad1.y) {
                 roboHardware.hookMove(this);
             } //Hook: 1Y
-            if (gamepad2.y && !(gamepad2.dpad_up)) {
+            if (gamepad2.y && !(gamepad2.start)) {
                 telemetry.addData("Airplane: ", "Launching...");
                 telemetry.update();
                 roboHardware.launchAirplane(this);

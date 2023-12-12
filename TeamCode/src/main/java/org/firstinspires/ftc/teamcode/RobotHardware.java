@@ -108,7 +108,7 @@ public class RobotHardware {
         //WRIST SERVO
         wristServo = hardwareMap.get(Servo.class, "wristServo");
         wristServo.setDirection(Servo.Direction.FORWARD);
-        wristServo.scaleRange(0.05, 0.6);
+        wristServo.scaleRange(0.35, 0.6);
 
         //CLAW SERVOS
         leftClaw = hardwareMap.get(Servo.class, "leftClaw");
@@ -232,7 +232,7 @@ public class RobotHardware {
     public void wristMovement(LinearOpMode teleop) {
 
         if (wristState) {
-            wristServo.setPosition(0.6);
+            wristServo.setPosition(0.55);
             teleop.telemetry.addData("Claw Position: ", "Pixel Pickup");
         }  //If it's in pickup position
         else if (!wristState) {
@@ -249,18 +249,22 @@ public class RobotHardware {
         wristState = false;
     }
 
-    public void clawGrab() {
+    public void clawGrab(LinearOpMode teleop) {
 
         if (clawClenched) {
             leftClaw.setPosition(0.055);
-            rightClaw.setPosition(0.055);
+            rightClaw.setPosition(0.065);
+
         }
         else if (!clawClenched) {
-            leftClaw.setPosition(0.08);
-            rightClaw.setPosition(0.08);
+            leftClaw.setPosition(0.09);
+            rightClaw.setPosition(0.09);
+
         }
 
         clawClenched = !clawClenched;
+        teleop.sleep(500);
+
 
     }
 

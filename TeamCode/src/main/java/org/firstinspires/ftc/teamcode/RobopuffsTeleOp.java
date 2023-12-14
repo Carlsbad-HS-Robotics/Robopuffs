@@ -60,7 +60,7 @@ public class RobopuffsTeleOp extends LinearOpMode {
          */
 
         while (opModeIsActive()) {
-            roboHardware.fieldCentricDrive(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
+            roboHardware.fieldCentricDrive(gamepad1.right_stick_x, gamepad1.right_stick_y, gamepad1.left_stick_x, this);
             roboHardware.armMovement(gamepad2.left_stick_y);
 
             if (gamepad2.left_bumper) {

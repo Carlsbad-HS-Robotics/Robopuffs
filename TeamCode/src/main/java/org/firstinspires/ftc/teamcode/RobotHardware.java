@@ -130,18 +130,25 @@ public class RobotHardware {
 
     } //init function
 
-    public void fieldCentricDrive (double x, double y, double rx) {
+    public void fieldCentricDrive (double x, double y, double rx, LinearOpMode teleop) {
 
         // Read inverse IMU heading, as the IMU heading is CW positive
         YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
 
-        double botHeading = orientation.getYaw(AngleUnit.DEGREES);
+        double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
 
-        double rotX = x * Math.cos(botHeading) - y * Math.sin(botHeading);
-        double rotY = x * Math.sin(botHeading) + y * Math.cos(botHeading);
+        // Rotate the movement direction counter to the bot's rotation
+        double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
+        double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
 
-        //Calls non-centric drive but with field centric parameters
-        robotCentricDrive(rotX, rotY, rx);
+        //rotX = -rotX;
+
+        rotX = rotX * 1.1;  // Counteract imperfect strafing
+
+        // Denominator is the largest motor power (absolute value) or 1
+        // This ensures all the powers maintain the same ratio,
+        // but only if at least one is out of the range [-1, 1]
+        robotCentricDrive(rotX,rotY,rx);
 
     }
 
@@ -304,7 +311,6 @@ public class RobotHardware {
         stopDrive();
     }
 
-    //Field centric drive
 
 
 } // class RobotHardware

@@ -108,16 +108,14 @@ public class RobotHardware {
         //WRIST SERVO
         wristServo = hardwareMap.get(Servo.class, "wristServo");
         wristServo.setDirection(Servo.Direction.FORWARD);
-        wristServo.scaleRange(0.35, 0.6);
+        wristServo.scaleRange(0.35, 0.7);
 
         //CLAW SERVOS
         leftClaw = hardwareMap.get(Servo.class, "leftClaw");
         leftClaw.setDirection(Servo.Direction.FORWARD);
-        //leftClaw.scaleRange(0.2, 0.6);
 
         rightClaw = hardwareMap.get(Servo.class, "rightClaw");
         rightClaw.setDirection(Servo.Direction.REVERSE);
-        //rightClaw.scaleRange(0.2, 0.6);
 
         // Retrieve the IMU from the hardware map
         imu = hardwareMap.get(IMU.class, "imu");
@@ -131,19 +129,25 @@ public class RobotHardware {
     } //init function
 
     public void fieldCentricDrive (double x, double y, double rx, LinearOpMode teleop) {
+        teleop.telemetry.addData("gamepadx: ", x);
+        teleop.telemetry.addData("gamepady: ", y);
 
         // Read inverse IMU heading, as the IMU heading is CW positive
         YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
 
         double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+        teleop.telemetry.addData("botHeading: ", botHeading);
 
         // Rotate the movement direction counter to the bot's rotation
-        double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
-        double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
-
+        double rotX = x * Math.cos(-botHeading) + y * Math.sin(-botHeading);
+        double rotY = -x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
+        teleop.telemetry.addData("rotx: ", rotX);
+        teleop.telemetry.addData("roty: ", rotY);
         //rotX = -rotX;
-
+        teleop.telemetry.update();
         rotX = rotX * 1.1;  // Counteract imperfect strafing
+
+        //rotY = -rotY;
 
         // Denominator is the largest motor power (absolute value) or 1
         // This ensures all the powers maintain the same ratio,
@@ -163,10 +167,10 @@ public class RobotHardware {
         double frontRightPower = (y + x + rx) / denominator;
         double backRightPower = (y - x + rx) / denominator;
 
-        frontLeftPower = frontLeftPower - (frontLeftPower*0.3);
-        frontRightPower = frontRightPower - (frontRightPower*0.3);
-        backLeftPower = backLeftPower - (backLeftPower*0.3);
-        backRightPower = backRightPower - (backRightPower*0.3);
+        frontLeftPower = frontLeftPower - (frontLeftPower*0.4);
+        frontRightPower = frontRightPower - (frontRightPower*0.4);
+        backLeftPower = backLeftPower - (backLeftPower*0.4);
+        backRightPower = backRightPower - (backRightPower*0.4);
 
         //Sets power to motors
         frontLeftMotor.setPower(frontLeftPower);
@@ -236,7 +240,9 @@ public class RobotHardware {
         //Now automatically presets
     }
 
+    /*
     public void wristMovement(LinearOpMode teleop) {
+
 
         if (wristState) {
             wristServo.setPosition(0.55);
@@ -252,6 +258,9 @@ public class RobotHardware {
 
     }
 
+     */
+
+
     public void spitefulBooleans() {
         wristState = false;
     }
@@ -260,7 +269,7 @@ public class RobotHardware {
 
         if (clawClenched) {
             leftClaw.setPosition(0.055);
-            rightClaw.setPosition(0.065);
+            rightClaw.setPosition(0.062);
 
         }
         else if (!clawClenched) {
@@ -269,6 +278,8 @@ public class RobotHardware {
 
         }
 
+        teleop.telemetry.addData("Clenched: ", clawClenched);
+        teleop.telemetry.update();
         clawClenched = !clawClenched;
         teleop.sleep(500);
 

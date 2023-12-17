@@ -79,11 +79,9 @@ public class RobopuffsTeleOp extends LinearOpMode {
                 roboHardware.clawGrab(this);
             } //claw clench
 
-            /*if (gamepad2.x) {
-                roboHardware.wristMovement(this);
-            } //Wrist in-game movement
-
-             */
+            if (gamepad1.back) {
+                roboHardware.reinitializeImu();
+            }
 
             if (gamepad2.left_trigger > 0) {
                 roboHardware.wristServo.setPosition(0);

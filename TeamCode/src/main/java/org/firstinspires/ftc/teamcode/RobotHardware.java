@@ -118,6 +118,12 @@ public class RobotHardware {
         rightClaw.setDirection(Servo.Direction.REVERSE);
 
         // Retrieve the IMU from the hardware map
+        reinitializeImu();
+
+
+    } //init function
+
+    public void reinitializeImu() {
         imu = hardwareMap.get(IMU.class, "imu");
         RevHubOrientationOnRobot.LogoFacingDirection logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.UP;
         RevHubOrientationOnRobot.UsbFacingDirection  usbDirection  = RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD;
@@ -125,8 +131,7 @@ public class RobotHardware {
         // Now initialize the IMU with this mounting orientation
         // Note: if you choose two conflicting directions, this initialization will cause a code exception.
         imu.initialize(new IMU.Parameters(orientationOnRobot));
-
-    } //init function
+    }
 
     public void fieldCentricDrive (double x, double y, double rx, LinearOpMode teleop) {
         teleop.telemetry.addData("gamepadx: ", x);
@@ -268,8 +273,8 @@ public class RobotHardware {
     public void clawGrab(LinearOpMode teleop) {
 
         if (clawClenched) {
-            leftClaw.setPosition(0.055);
-            rightClaw.setPosition(0.062);
+            leftClaw.setPosition(0.047);
+            rightClaw.setPosition(0.060);
 
         }
         else if (!clawClenched) {

@@ -18,7 +18,7 @@ public class RobopuffsBlueAutonomous extends LinearOpMode {
         this.telemetry.addData("Status: ", "Not Initialized");
         this.telemetry.update();
         RobotHardware roboHardware = new RobotHardware(hardwareMap);
-        roboHardware.initialize();
+        roboHardware.initialize(true);
         this.telemetry.addData("Status: ", "Initialized");
         this.telemetry.update();
 

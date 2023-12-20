@@ -45,11 +45,13 @@ public class RobotHardware {
     public IMU imu;
     public HardwareMap hardwareMap;
 
+    public double angleDiff = 0;
+
     public RobotHardware (HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;
     }
 
-    public void initialize() {
+    public void initialize(boolean imuInit) {
 
         //DRIVE MOTORS
         frontLeftMotor = hardwareMap.get(DcMotor.class, "frontLeftMotor");
@@ -118,12 +120,15 @@ public class RobotHardware {
         rightClaw.setDirection(Servo.Direction.REVERSE);
 
         // Retrieve the IMU from the hardware map
-        reinitializeImu();
-
+        if (imuInit) {
+            initImu();
+        } else {
+            imu = hardwareMap.get(IMU.class, "imu");
+        }
 
     } //init function
 
-    public void reinitializeImu() {
+    public void initImu() {
         imu = hardwareMap.get(IMU.class, "imu");
         RevHubOrientationOnRobot.LogoFacingDirection logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.UP;
         RevHubOrientationOnRobot.UsbFacingDirection  usbDirection  = RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD;
@@ -133,14 +138,20 @@ public class RobotHardware {
         imu.initialize(new IMU.Parameters(orientationOnRobot));
     }
 
+    public void reinitImu() {
+        double newHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+        angleDiff = -newHeading;
+
+    }
     public void fieldCentricDrive (double x, double y, double rx, LinearOpMode teleop) {
         teleop.telemetry.addData("gamepadx: ", x);
         teleop.telemetry.addData("gamepady: ", y);
 
         // Read inverse IMU heading, as the IMU heading is CW positive
-        YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
+        //YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
 
         double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+        botHeading = botHeading+angleDiff;
         teleop.telemetry.addData("botHeading: ", botHeading);
 
         // Rotate the movement direction counter to the bot's rotation

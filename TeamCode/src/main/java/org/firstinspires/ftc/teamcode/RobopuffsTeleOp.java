@@ -42,7 +42,7 @@ public class RobopuffsTeleOp extends LinearOpMode {
     public void runOpMode() {
         this.telemetry.addData("Status: ", "TeleOp Not Initialized");
         RobotHardware roboHardware = new RobotHardware(hardwareMap);
-        roboHardware.initialize();
+        roboHardware.initialize(true);
         this.telemetry.addData("Status: ", "TeleOp Initialized");
         this.telemetry.update();
 
@@ -69,19 +69,18 @@ public class RobopuffsTeleOp extends LinearOpMode {
             else if (gamepad2.right_bumper) {
                 roboHardware.wristServo.setPosition(0.36);
             } //If it's in board position
-
             if (gamepad2.dpad_up) {
                 roboHardware.wristServo.setPosition(1);
             }
-
 
             if (gamepad2.a && !(gamepad2.start)) {
                 roboHardware.clawGrab(this);
             } //claw clench
 
-            if (gamepad1.back) {
-                roboHardware.reinitializeImu();
-            }
+
+            if (gamepad1.dpad_left) {
+                roboHardware.reinitImu();
+            } //reset imu
 
             if (gamepad2.left_trigger > 0) {
                 roboHardware.wristServo.setPosition(0);

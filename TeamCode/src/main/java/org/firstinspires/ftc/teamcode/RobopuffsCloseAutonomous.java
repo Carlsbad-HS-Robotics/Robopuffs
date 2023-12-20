@@ -18,21 +18,14 @@ public class RobopuffsCloseAutonomous extends LinearOpMode {
         this.telemetry.addData("Status: ", "Not Initialized");
         this.telemetry.update();
         RobotHardware roboHardware = new RobotHardware(hardwareMap);
-        roboHardware.initialize();
+        roboHardware.initialize(true);
         this.telemetry.addData("Status: ", "Initialized");
         this.telemetry.update();
 
         waitForStart();
         autoTime.reset();
 
-
-        roboHardware.backLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        roboHardware.frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        roboHardware.backRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-        roboHardware.frontRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-
         //6 mats
-
         //1 mat = 915 milliseconds
         sleep(500);
         roboHardware.backLeftMotor.setPower(0.5);

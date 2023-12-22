@@ -283,6 +283,7 @@ public class RobotHardware {
 
     public void clawGrab(LinearOpMode teleop) {
 
+        //Larger value =
         if (clawClenched) {
             leftClaw.setPosition(0.047);
             rightClaw.setPosition(0.060);

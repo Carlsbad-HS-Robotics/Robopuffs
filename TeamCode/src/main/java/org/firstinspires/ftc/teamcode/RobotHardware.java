@@ -22,16 +22,17 @@ public class RobotHardware {
     public DcMotor backLeftMotor;
     public DcMotor backRightMotor;
 
-    //hook motors
-    public DcMotor rightHookMotor;
-    public DcMotor leftHookMotor;
+    //hook motor
+    public DcMotor hookMotor;
+    public static boolean hookCompressed;
+    public DcMotor flipMotor;
 
     //servo for airplane launch
     public Servo airplaneLauncher;
 
     //Arm Motor
     public DcMotor armMotor;
-    public static int extendedState = 3;
+    public static boolean extendedState = false;
 
     public long moveTime = 5000; //Hook movement time (in milliseconds)
 
@@ -39,8 +40,9 @@ public class RobotHardware {
     public static boolean wristState = true;
     public static boolean clawClenched = false;
     public Servo leftClaw;
-
+    public boolean leftClawClenched;
     public Servo rightClaw;
+    public boolean rightClawClenched;
 
     public IMU imu;
     public HardwareMap hardwareMap;
@@ -87,18 +89,21 @@ public class RobotHardware {
 
 
         //HOOK MOTOR
-        leftHookMotor = hardwareMap.get(DcMotor.class, "leftHookMotor");
-        rightHookMotor = hardwareMap.get(DcMotor.class, "rightHookMotor");
-        leftHookMotor.setPower(0);
-        rightHookMotor.setPower(0);
-        leftHookMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightHookMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftHookMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightHookMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        leftHookMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightHookMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        leftHookMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-        rightHookMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        hookMotor = hardwareMap.get(DcMotor.class, "hookMotor");
+        hookMotor.setPower(0);
+        hookMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        hookMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        hookMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        hookMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        int position = hookMotor.getCurrentPosition();
+
+        //HOOK FLIP MOTOR
+        flipMotor = hardwareMap.get(DcMotor.class, "flipMotor");
+        flipMotor.setPower(0);
+        flipMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        flipMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        flipMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        flipMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
         //ARM MOTOR
         armMotor = hardwareMap.get(DcMotor.class, "armMotor");
@@ -110,7 +115,7 @@ public class RobotHardware {
         //WRIST SERVO
         wristServo = hardwareMap.get(Servo.class, "wristServo");
         wristServo.setDirection(Servo.Direction.FORWARD);
-        wristServo.scaleRange(0.35, 0.7);
+        wristServo.scaleRange(0.35, 0.9);
 
         //CLAW SERVOS
         leftClaw = hardwareMap.get(Servo.class, "leftClaw");
@@ -136,31 +141,30 @@ public class RobotHardware {
         // Now initialize the IMU with this mounting orientation
         // Note: if you choose two conflicting directions, this initialization will cause a code exception.
         imu.initialize(new IMU.Parameters(orientationOnRobot));
-    }
-
+    }  //Initialize IMU
     public void reinitImu() {
         double newHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
         angleDiff = -newHeading;
 
-    }
+    } //Reinitialize IMU
     public void fieldCentricDrive (double x, double y, double rx, LinearOpMode teleop) {
-        teleop.telemetry.addData("gamepadx: ", x);
-        teleop.telemetry.addData("gamepady: ", y);
+        //teleop.telemetry.addData("gamepadx: ", x);
+        //teleop.telemetry.addData("gamepady: ", y);
 
         // Read inverse IMU heading, as the IMU heading is CW positive
         //YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
 
         double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
         botHeading = botHeading+angleDiff;
-        teleop.telemetry.addData("botHeading: ", botHeading);
+        //teleop.telemetry.addData("botHeading: ", botHeading);
 
         // Rotate the movement direction counter to the bot's rotation
         double rotX = x * Math.cos(-botHeading) + y * Math.sin(-botHeading);
         double rotY = -x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
-        teleop.telemetry.addData("rotx: ", rotX);
-        teleop.telemetry.addData("roty: ", rotY);
+        //teleop.telemetry.addData("rotx: ", rotX);
+        //teleop.telemetry.addData("roty: ", rotY);
         //rotX = -rotX;
-        teleop.telemetry.update();
+        //teleop.telemetry.update();
         rotX = rotX * 1.1;  // Counteract imperfect strafing
 
         //rotY = -rotY;
@@ -171,7 +175,6 @@ public class RobotHardware {
         robotCentricDrive(rotX,rotY,rx);
 
     }
-
     public void robotCentricDrive (double x, double y, double rx) {
 
         // Denominator is the largest motor power (absolute value) or 1
@@ -195,35 +198,27 @@ public class RobotHardware {
         backRightMotor.setPower(backRightPower);
     }
 
-    public void hookMove(LinearOpMode teleop) {
-
-        teleop.telemetry.addData("Hook: ", "Moving...");
-        teleop.telemetry.update();
-
-        if (extendedState == 1) {
-            leftHookMotor.setPower(1);
-            rightHookMotor.setPower(1);
-            teleop.sleep(moveTime);
-        }  //If it's fully compressed
-        else if (extendedState == 2 || extendedState == 3) {
-            leftHookMotor.setPower(-1);
-            rightHookMotor.setPower(-1);
-            teleop.sleep(moveTime/2);
-
-            if (extendedState == 3) {
-                extendedState = 0;
+    //TELEOP FUNCTIONS
+    public void hookMove(LinearOpMode teleop, boolean y) {
+        //Extended State true = not extended
+        if (y) {
+            if (extendedState) {
+                //NOT extended
+                hookMotor.setPower(-1);
+                teleop.sleep(moveTime);
             }
-        } //If it's extended fully or halfway
+            else if (!extendedState) {
 
-        rightHookMotor.setPower(0);
-        leftHookMotor.setPower(0);
+                hookMotor.setPower(1);
+                teleop.sleep(moveTime);
+            } //If it's extended fully or halfway
 
-        extendedState++;
+            hookMotor.setPower(0);
+            extendedState = !extendedState;
+        }
 
-        teleop.telemetry.addData("Hook: ", "Moved");
-        teleop.telemetry.update();
 
-    } //Move hoisting hooks
+    } //Move hoisting hooks and flip the swing
 
     public void armMovement (double y) {
 
@@ -247,66 +242,39 @@ public class RobotHardware {
         }
     } //arm movement
 
-    public void launchAirplane(LinearOpMode teleop) {
-        airplaneLauncher.setPosition(0.6);
-        //sleep(1000);
-        airplaneLauncher.setPosition(0);
-        teleop.sleep(1000);
-        airplaneLauncher.setPosition(0.6);
-        //Now automatically presets
-    }
+    public void launchAirplane(LinearOpMode teleop, boolean launchState) {
+        if (launchState) {
+            airplaneLauncher.setPosition(0.3);
+            //sleep(1000);
+            airplaneLauncher.setPosition(0.8);
+            teleop.sleep(1000);
+            airplaneLauncher.setPosition(0.3);
+        }
+    } //launch the airplane
 
-    /*
-    public void wristMovement(LinearOpMode teleop) {
+    public void clawGrab() {
 
-
-        if (wristState) {
-            wristServo.setPosition(0.55);
-            teleop.telemetry.addData("Claw Position: ", "Pixel Pickup");
-        }  //If it's in pickup position
-        else if (!wristState) {
-            wristServo.setPosition(1);
-            teleop.telemetry.addData("Claw Position: ", "Pixel Placing");
-        } //If it's in board position
-
-        wristState = !wristState;
-        teleop.telemetry.update();
-
-    }
-
-     */
-
-
-    public void spitefulBooleans() {
-        wristState = false;
-    }
-
-    public void clawGrab(LinearOpMode teleop) {
-
-        //Larger value =
-        if (clawClenched) {
+        if (leftClawClenched) {
             leftClaw.setPosition(0.047);
-            rightClaw.setPosition(0.060);
-
-        }
-        else if (!clawClenched) {
+            //rightClaw.setPosition(0.060);
+        } else if (!leftClawClenched) {
             leftClaw.setPosition(0.09);
-            rightClaw.setPosition(0.09);
-
         }
 
-        teleop.telemetry.addData("Clenched: ", clawClenched);
-        teleop.telemetry.update();
-        clawClenched = !clawClenched;
-        teleop.sleep(500);
+        if (rightClawClenched) {
+            rightClaw.setPosition(0.060);
+        } else if (!rightClawClenched) {
+            rightClaw.setPosition(0.09);
+        }
 
+    } //Move the claws (individually)
+
+    public void flipHook() {
 
     }
 
     //AUTONOMOUS FUNCTIONS
-
     double driveSpeed = 0.5;
-
     public void goDrive(LinearOpMode teleop, long driveTime) {
         backLeftMotor.setPower(driveSpeed);
         backRightMotor.setPower(driveSpeed);

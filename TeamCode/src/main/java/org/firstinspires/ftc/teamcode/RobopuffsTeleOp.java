@@ -63,6 +63,16 @@ public class RobopuffsTeleOp extends LinearOpMode {
             roboHardware.fieldCentricDrive(gamepad1.right_stick_x, gamepad1.right_stick_y, gamepad1.left_stick_x, this);
             roboHardware.armMovement(gamepad2.left_stick_y);
 
+            //CLAWS
+            if (gamepad2.left_trigger == 1) {
+                roboHardware.leftClawClenched = !roboHardware.leftClawClenched;
+            } //left trigger = left claw
+            if (gamepad2.right_trigger == 1) {
+                roboHardware.rightClawClenched = !roboHardware.rightClawClenched;
+            } //right trigger = right claw
+            roboHardware.clawGrab();
+
+            //WRIST
             if (gamepad2.left_bumper) {
                 roboHardware.wristServo.setPosition(1);
             }  //If it's in pickup position
@@ -73,79 +83,24 @@ public class RobopuffsTeleOp extends LinearOpMode {
                 roboHardware.wristServo.setPosition(1);
             }
 
-            if (gamepad2.a && !(gamepad2.start)) {
-                roboHardware.clawGrab(this);
-            } //claw clench
-
-
-            if (gamepad1.dpad_left) {
+            //IMU
+            if (gamepad1.x) {
                 roboHardware.reinitImu();
-            } //reset imu
-
-            if (gamepad2.left_trigger > 0) {
-                roboHardware.wristServo.setPosition(0);
-                roboHardware.spitefulBooleans();
-            } //set wrist to 0
-            else if (gamepad2.right_trigger > 0) {
-                roboHardware.wristServo.setPosition(1);
-                roboHardware.spitefulBooleans();
-            } //set wrist to 1
-
-            if (gamepad1.y) {
-                roboHardware.hookMove(this);
-            } //Hook: 1Y
-            if (gamepad2.y && !(gamepad2.start)) {
-                telemetry.addData("Airplane: ", "Launching...");
-                telemetry.update();
-                roboHardware.launchAirplane(this);
-                telemetry.addData("Airplane: ", "Launched");
-                telemetry.update();
-            } //Airplane: 2Y
-
-            //Non-static/ preset Hook movement
-            /*
-            if (gamepad2.y) {
-                roboHardware.rightHookMotor.setPower(1.0);
-
-            } //UP
-            else if (gamepad2.a) {
-                roboHardware.rightHookMotor.setPower(-1.0);
-
-            } //DOWN
-            else {
-                roboHardware.rightHookMotor.setPower(0);
-
             }
 
-            //left
-            if (gamepad2.dpad_up) {
-                roboHardware.leftHookMotor.setPower(1.0);
-            }
-            else if (gamepad2.dpad_down) {
-                roboHardware.leftHookMotor.setPower(-1.0);
-            }
-            else {
-                roboHardware.leftHookMotor.setPower(0);
-            }
+            //HOOK
+            roboHardware.hookMove(this, gamepad1.y); //1Y
 
-            */ //Individual Hook Movement
-            /*
-            if (gamepad2.y) {
-                roboHardware.rightHookMotor.setPower(1.0);
-                roboHardware.leftHookMotor.setPower(1.0);
+            //AIRPLANE
+            roboHardware.launchAirplane(this, gamepad2.y); //2Y
 
-            } //UP
-            else if (gamepad2.a) {
-                roboHardware.rightHookMotor.setPower(-1.0);
-                roboHardware.leftHookMotor.setPower(-1.0);
-
-            } //DOWN
-            else {
-                roboHardware.rightHookMotor.setPower(0);
-                roboHardware.leftHookMotor.setPower(0);
+            if (gamepad1.dpad_down) {
+                roboHardware.flipMotor.setPower(-0.23);
+                sleep(600);
+                roboHardware.flipMotor.setPower(-0.0001);
             }
 
-             */ //Both Hoist Hooks
+
         }
     }
 }

@@ -62,6 +62,8 @@ public class RobopuffsTeleOp extends LinearOpMode {
         while (opModeIsActive()) {
             roboHardware.fieldCentricDrive(gamepad1.right_stick_x, gamepad1.right_stick_y, gamepad1.left_stick_x, this);
             roboHardware.armMovement(gamepad2.left_stick_y);
+            telemetry.addData("Encoder Position: ", roboHardware.armMotor.getCurrentPosition()); //constantly updates arm motor pos
+
 
             //CLAWS
             if (gamepad2.left_trigger == 1) {
@@ -79,9 +81,6 @@ public class RobopuffsTeleOp extends LinearOpMode {
             else if (gamepad2.right_bumper) {
                 roboHardware.wristServo.setPosition(0.36);
             } //If it's in board position
-            if (gamepad2.dpad_up) {
-                roboHardware.wristServo.setPosition(1);
-            }
 
             //IMU
             if (gamepad1.x) {
@@ -94,11 +93,23 @@ public class RobopuffsTeleOp extends LinearOpMode {
             //AIRPLANE
             roboHardware.launchAirplane(this, gamepad2.y); //2Y
 
+            //HOOK SWING
             if (gamepad1.dpad_down) {
                 roboHardware.flipMotor.setPower(-0.23);
                 sleep(600);
-                roboHardware.flipMotor.setPower(-0.0001);
+                roboHardware.flipMotor.setPower(-0.001);
+            } //DPAD DOWN = SWING DOWN
+            else if (gamepad1.dpad_up) {
+                roboHardware.flipMotor.setPower(0.23);
+                sleep(600);
+                roboHardware.flipMotor.setPower(0);
+            } //DPAD UP = SWING UP
+
+            if (gamepad2.dpad_left) {
+                roboHardware.testEncoders();
             }
+
+            telemetry.update();
 
 
         }

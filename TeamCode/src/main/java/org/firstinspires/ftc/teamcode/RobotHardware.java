@@ -24,8 +24,9 @@ public class RobotHardware {
 
     //hook motor
     public DcMotor hookMotor;
-    public static boolean hookCompressed;
     public DcMotor flipMotor;
+
+    public int armMotorCPR;
 
     //servo for airplane launch
     public Servo airplaneLauncher;
@@ -87,7 +88,6 @@ public class RobotHardware {
         airplaneLauncher = hardwareMap.get(Servo.class, "airplaneLauncher");
         airplaneLauncher.setDirection(Servo.Direction.FORWARD);
 
-
         //HOOK MOTOR
         hookMotor = hardwareMap.get(DcMotor.class, "hookMotor");
         hookMotor.setPower(0);
@@ -95,7 +95,6 @@ public class RobotHardware {
         hookMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         hookMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         hookMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-        int position = hookMotor.getCurrentPosition();
 
         //HOOK FLIP MOTOR
         flipMotor = hardwareMap.get(DcMotor.class, "flipMotor");
@@ -107,10 +106,12 @@ public class RobotHardware {
 
         //ARM MOTOR
         armMotor = hardwareMap.get(DcMotor.class, "armMotor");
-        armMotor.setPower(0);
+        armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        armMotor.setPower(0);
         armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         armMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+
 
         //WRIST SERVO
         wristServo = hardwareMap.get(Servo.class, "wristServo");
@@ -269,8 +270,9 @@ public class RobotHardware {
 
     } //Move the claws (individually)
 
-    public void flipHook() {
-
+    public void testEncoders() {
+        armMotor.setTargetPosition(100);
+        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
     //AUTONOMOUS FUNCTIONS

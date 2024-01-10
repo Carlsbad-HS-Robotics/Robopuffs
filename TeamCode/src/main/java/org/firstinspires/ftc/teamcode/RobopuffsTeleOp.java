@@ -63,23 +63,15 @@ public class RobopuffsTeleOp extends LinearOpMode {
             roboHardware.fieldCentricDrive(gamepad1.right_stick_x, gamepad1.right_stick_y, gamepad1.left_stick_x, this);
             roboHardware.armMovement(gamepad2.left_stick_y);
             telemetry.addData("Encoder Position: ", roboHardware.armMotor.getCurrentPosition()); //constantly updates arm motor pos
-
-
             //CLAWS
-            if (gamepad2.left_trigger == 1) {
-                roboHardware.leftClawClenched = !roboHardware.leftClawClenched;
-            } //left trigger = left claw
-            if (gamepad2.right_trigger == 1) {
-                roboHardware.rightClawClenched = !roboHardware.rightClawClenched;
-            } //right trigger = right claw
-            roboHardware.clawGrab();
+            roboHardware.clawGrab(gamepad2.left_trigger, gamepad2.right_trigger);
 
             //WRIST
             if (gamepad2.left_bumper) {
-                roboHardware.wristServo.setPosition(1);
+                roboHardware.testingWrist(true);
             }  //If it's in pickup position
             else if (gamepad2.right_bumper) {
-                roboHardware.wristServo.setPosition(0.36);
+                roboHardware.testingWrist(false);
             } //If it's in board position
 
             //IMU
@@ -95,14 +87,14 @@ public class RobopuffsTeleOp extends LinearOpMode {
 
             //HOOK SWING
             if (gamepad1.dpad_down) {
+                roboHardware.flipMotor.setPower(0.23);
+                sleep(600);
+                roboHardware.flipMotor.setPower(0.001);
+            } //DPAD DOWN = SWING DOWN
+            else if (gamepad1.dpad_up) {
                 roboHardware.flipMotor.setPower(-0.23);
                 sleep(600);
                 roboHardware.flipMotor.setPower(-0.001);
-            } //DPAD DOWN = SWING DOWN
-            else if (gamepad1.dpad_up) {
-                roboHardware.flipMotor.setPower(0.23);
-                sleep(600);
-                roboHardware.flipMotor.setPower(0);
             } //DPAD UP = SWING UP
 
             if (gamepad2.dpad_left) {
@@ -111,6 +103,12 @@ public class RobopuffsTeleOp extends LinearOpMode {
 
             telemetry.update();
 
+            if (gamepad2.dpad_up) {
+                roboHardware.presetArm(false, this);
+            }
+            else if (gamepad2.dpad_down) {
+                roboHardware.presetArm(true, this);
+            }
 
         }
     }

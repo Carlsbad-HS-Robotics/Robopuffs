@@ -38,6 +38,7 @@ public class RobotHardware {
     public long moveTime = 5000; //Hook movement time (in milliseconds)
 
     public Servo wristServo;
+    int wristPos = 0;
     public static boolean wristState = true;
     public static boolean clawClenched = false;
     public Servo leftClaw;
@@ -107,7 +108,7 @@ public class RobotHardware {
         //ARM MOTOR
         armMotor = hardwareMap.get(DcMotor.class, "armMotor");
         armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         armMotor.setPower(0);
         armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         armMotor.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -253,26 +254,44 @@ public class RobotHardware {
         }
     } //launch the airplane
 
-    public void clawGrab() {
+    public void clawGrab(float leftT, float rightT) {
 
-        if (leftClawClenched) {
+        if (leftT > 0.5) {
             leftClaw.setPosition(0.047);
-            //rightClaw.setPosition(0.060);
-        } else if (!leftClawClenched) {
+        } else if (leftT <= 0.5) {
             leftClaw.setPosition(0.09);
         }
 
-        if (rightClawClenched) {
+        if (rightT > 0.5) {
             rightClaw.setPosition(0.060);
-        } else if (!rightClawClenched) {
+        } else if (rightT <= 0.5) {
             rightClaw.setPosition(0.09);
         }
 
     } //Move the claws (individually)
 
+    public void testingWrist(boolean forwards) {
+        //
+    }
+
+    public void presetArm(boolean direction, LinearOpMode teleop) {
+        if (direction) {
+            armMotor.setPower(1);
+            teleop.sleep(1250);
+            armMotor.setPower(0);
+        }
+        else if (!direction) {
+            armMotor.setPower(-1);
+            teleop.sleep(1250);
+            armMotor.setPower(0);
+        }
+    }
+
     public void testEncoders() {
-        armMotor.setTargetPosition(100);
+        armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        armMotor.setTargetPosition(-100);
         armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        armMotor.setPower(1);
     }
 
     //AUTONOMOUS FUNCTIONS

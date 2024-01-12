@@ -225,23 +225,30 @@ public class RobotHardware {
     public void armMovement (double y) {
 
         double fullPower = 0.9;
-        double halfPower = 0.4;
+        double mediumPower = 0.4;
+        double minimalPower = 0.2;
 
-        if (y <= .6 && y>0) {
-            //half power forward
-            armMotor.setPower(halfPower);
-        } else if (y > .6) {
-            //full power forward
+        if (y > 0.7) {
             armMotor.setPower(fullPower);
-        } else if (y >= -0.6 && y<0) {
-            //half power backward
-            armMotor.setPower(-halfPower);
-        } else if (y < -0.6) {
-            //full power forward
+        } //fast forward
+        else if (y < -0.7) {
             armMotor.setPower(-fullPower);
-        } else {
+        } //fast backward
+        else if (y > 0.25) {
+            armMotor.setPower(mediumPower);
+        } //medium forward
+        else if (y < -0.25) {
+            armMotor.setPower(-mediumPower);
+        } //medium backward
+        else if (y > 0) {
+            armMotor.setPower(minimalPower);
+        } //slowly forward
+        else if (y < 0) {
+            armMotor.setPower(-minimalPower);
+        } //slowly backward
+        else {
             armMotor.setPower(0);
-        }
+        } //no movement
     } //arm movement
 
     public void launchAirplane(LinearOpMode teleop, boolean launchState) {
@@ -255,6 +262,8 @@ public class RobotHardware {
     } //launch the airplane
 
     public void clawGrab(float leftT, float rightT) {
+
+        //Larger servo position = farther out
 
         if (leftT > 0.5) {
             leftClaw.setPosition(0.047);
@@ -270,19 +279,19 @@ public class RobotHardware {
 
     } //Move the claws (individually)
 
-    public void testingWrist(boolean forwards) {
-        //
-    }
-
     public void presetArm(boolean direction, LinearOpMode teleop) {
+        //Direction true = up
+        //Direction false = down
         if (direction) {
+            //Move arm up/ towards back
             armMotor.setPower(1);
-            teleop.sleep(1250);
+            teleop.sleep(2500);
             armMotor.setPower(0);
         }
         else if (!direction) {
+            //Move arm down/ towards front
             armMotor.setPower(-1);
-            teleop.sleep(1250);
+            teleop.sleep(2500);
             armMotor.setPower(0);
         }
     }

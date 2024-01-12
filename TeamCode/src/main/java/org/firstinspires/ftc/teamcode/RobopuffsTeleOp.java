@@ -48,16 +48,7 @@ public class RobopuffsTeleOp extends LinearOpMode {
 
         waitForStart();
         runtime.reset();
-        // run until the end of the match (driver presses STOP)
-        //gamepad1 is for robot movement/relocation
-        //gamepad2 is for controlling the arm & airplane launcher
 
-        /*
-        roboHardware.wristServo.setPosition(0);
-        roboHardware.leftClaw.setPosition(0.08);
-        roboHardware.rightClaw.setPosition(0.09);
-
-         */
 
         while (opModeIsActive()) {
             roboHardware.fieldCentricDrive(gamepad1.right_stick_x, gamepad1.right_stick_y, gamepad1.left_stick_x, this);
@@ -65,13 +56,18 @@ public class RobopuffsTeleOp extends LinearOpMode {
             telemetry.addData("Encoder Position: ", roboHardware.armMotor.getCurrentPosition()); //constantly updates arm motor pos
             //CLAWS
             roboHardware.clawGrab(gamepad2.left_trigger, gamepad2.right_trigger);
+            roboHardware.hookMove(this, gamepad1.y); //1Y
+            roboHardware.launchAirplane(this, gamepad2.y); //2Y
+
+            telemetry.addData("Left Claw Position:", roboHardware.leftClaw.getPosition());
+            telemetry.addData("Right Claw Position:", roboHardware.rightClaw.getPosition());
 
             //WRIST
             if (gamepad2.left_bumper) {
-                roboHardware.testingWrist(true);
+                roboHardware.wristServo.setPosition(1);
             }  //If it's in pickup position
             else if (gamepad2.right_bumper) {
-                roboHardware.testingWrist(false);
+                roboHardware.wristServo.setPosition(0);
             } //If it's in board position
 
             //IMU
@@ -80,10 +76,10 @@ public class RobopuffsTeleOp extends LinearOpMode {
             }
 
             //HOOK
-            roboHardware.hookMove(this, gamepad1.y); //1Y
+
 
             //AIRPLANE
-            roboHardware.launchAirplane(this, gamepad2.y); //2Y
+
 
             //HOOK SWING
             if (gamepad1.dpad_down) {
@@ -109,6 +105,8 @@ public class RobopuffsTeleOp extends LinearOpMode {
             else if (gamepad2.dpad_down) {
                 roboHardware.presetArm(true, this);
             }
+
+            telemetry.update();
 
         }
     }

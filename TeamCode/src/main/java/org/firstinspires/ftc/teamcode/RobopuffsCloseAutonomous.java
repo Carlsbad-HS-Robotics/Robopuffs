@@ -9,7 +9,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Autonomous (name = "Close Side Autonomous", group = "Autonomous")
 public class RobopuffsCloseAutonomous extends LinearOpMode {
-
     private ElapsedTime autoTime = new ElapsedTime();
 
     @Override
@@ -25,14 +24,20 @@ public class RobopuffsCloseAutonomous extends LinearOpMode {
         waitForStart();
         autoTime.reset();
 
-        //6 mats
         //1 mat = 915 milliseconds
+
+
+        //Grab the pixels
+        roboHardware.clawGrab(1, 1);
+        roboHardware.presetArm(true,this);
+        roboHardware.turnLeft(this);
         sleep(500);
-        roboHardware.backLeftMotor.setPower(0.5);
-        roboHardware.backRightMotor.setPower(0.5);
-        roboHardware.frontLeftMotor.setPower(0.5);
-        roboHardware.frontRightMotor.setPower(0.5);
-        sleep(915*2);
+        //Move backward
+        roboHardware.backLeftMotor.setPower(-0.5);
+        roboHardware.backRightMotor.setPower(-0.5);
+        roboHardware.frontLeftMotor.setPower(-0.5);
+        roboHardware.frontRightMotor.setPower(-0.5);
+        sleep(915*2-(915/4));
         roboHardware.stopDrive();
 
 

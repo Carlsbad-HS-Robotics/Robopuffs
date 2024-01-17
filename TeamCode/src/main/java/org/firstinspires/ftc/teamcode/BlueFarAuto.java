@@ -34,14 +34,15 @@ public class BlueFarAuto extends LinearOpMode {
         //6 mats
 
         //1 mat = 915 milliseconds
-        roboHardware.clawGrab(1,1);
+        //roboHardware.clawGrab(1,1);
         sleep(500);
-        roboHardware.presetArm(false, this);
+        //roboHardware.presetArm(false, this);
         sleep(500);
         roboHardware.goDrive(this, 2.2, 1); //first drive forward
         sleep(500);
         roboHardware.turnRight(this); //Turn to truss; turns left not red for some reason
         sleep(500);
+        roboHardware.hookSwing(this,false,true);
         roboHardware.presetArm(false,this);
         sleep(500);
         roboHardware.goDrive(this, 4, 1); //Move to backstage

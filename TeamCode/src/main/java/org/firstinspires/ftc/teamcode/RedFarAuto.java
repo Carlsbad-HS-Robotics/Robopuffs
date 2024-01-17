@@ -32,9 +32,9 @@ public class RedFarAuto extends LinearOpMode {
         roboHardware.frontRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
         //1 mat = 915 milliseconds
-        roboHardware.clawGrab(1,1);
+        //roboHardware.clawGrab(1,1);
         sleep(500);
-        roboHardware.presetArm(false, this);
+        //roboHardware.presetArm(false, this);
         sleep(500);
         roboHardware.goDrive(this, 2.2, 1); //first drive forward
         sleep(500);

@@ -33,9 +33,9 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@TeleOp(name="Robopuffs TeleOp", group="TeleOps")
+@TeleOp(name="TeleOp", group="TeleOps")
 
-public class RobopuffsTeleOp extends LinearOpMode {
+public class RPTeleOp extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
     @Override
@@ -56,57 +56,41 @@ public class RobopuffsTeleOp extends LinearOpMode {
             telemetry.addData("Encoder Position: ", roboHardware.armMotor.getCurrentPosition()); //constantly updates arm motor pos
             //CLAWS
             roboHardware.clawGrab(gamepad2.left_trigger, gamepad2.right_trigger);
-            roboHardware.hookMove(this, gamepad1.y); //1Y
+            roboHardware.hookMove(this, gamepad1.y, gamepad1.a, gamepad1.start, gamepad2.start); //1Y UP, 1A DOWN
             roboHardware.launchAirplane(this, gamepad2.y); //2Y
-
-            telemetry.addData("Left Claw Position:", roboHardware.leftClaw.getPosition());
-            telemetry.addData("Right Claw Position:", roboHardware.rightClaw.getPosition());
+            roboHardware.hookSwing(this, gamepad1.dpad_up, gamepad1.dpad_down); //1 Dpad Up & Down
 
             //WRIST
             if (gamepad2.left_bumper) {
                 roboHardware.wristServo.setPosition(1);
-            }  //If it's in pickup position
+            }  //If it's in board position / towards back
             else if (gamepad2.right_bumper) {
-                roboHardware.wristServo.setPosition(0);
-            } //If it's in board position
-
+                roboHardware.wristServo.setPosition(0.7);
+            } //If it's in pickup position / towards front
             //IMU
             if (gamepad1.x) {
                 roboHardware.reinitImu();
             }
 
-            //HOOK
-
-
-            //AIRPLANE
-
-
             //HOOK SWING
-            if (gamepad1.dpad_down) {
-                roboHardware.flipMotor.setPower(0.23);
-                sleep(600);
-                roboHardware.flipMotor.setPower(0.001);
-            } //DPAD DOWN = SWING DOWN
-            else if (gamepad1.dpad_up) {
-                roboHardware.flipMotor.setPower(-0.23);
-                sleep(600);
-                roboHardware.flipMotor.setPower(-0.001);
-            } //DPAD UP = SWING UP
 
-            if (gamepad2.dpad_left) {
-                roboHardware.testEncoders();
-            }
+            //Dpad up = swing upright & vice versa
 
             telemetry.update();
 
+            //ARM PRESETS
+            /*
             if (gamepad2.dpad_up) {
                 roboHardware.presetArm(false, this);
             }
             else if (gamepad2.dpad_down) {
                 roboHardware.presetArm(true, this);
             }
+             */
 
-            telemetry.update();
+            if (gamepad1.b) {
+                roboHardware.goDrive(this, 1, 1);
+            }
 
         }
     }

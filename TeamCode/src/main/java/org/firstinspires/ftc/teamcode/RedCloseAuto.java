@@ -2,13 +2,14 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+@Disabled
 
-@Autonomous (name = "Close Side Autonomous", group = "Autonomous")
-public class RobopuffsCloseAutonomous extends LinearOpMode {
+@Autonomous (name = "Red Close Side Autonomous", group = "Autonomous")
+public class RedCloseAuto extends LinearOpMode {
     private ElapsedTime autoTime = new ElapsedTime();
 
     @Override
@@ -29,16 +30,27 @@ public class RobopuffsCloseAutonomous extends LinearOpMode {
 
         //Grab the pixels
         roboHardware.clawGrab(1, 1);
-        roboHardware.presetArm(true,this);
-        roboHardware.turnLeft(this);
+        sleep(500);
+        roboHardware.presetArm(false,this);
+        sleep(500);
+        roboHardware.goDrive(this, 0.2, 1);
+        roboHardware.turnRight(this);
         sleep(500);
         //Move backward
-        roboHardware.backLeftMotor.setPower(-0.5);
-        roboHardware.backRightMotor.setPower(-0.5);
-        roboHardware.frontLeftMotor.setPower(-0.5);
-        roboHardware.frontRightMotor.setPower(-0.5);
-        sleep(915*2-(915/4));
+        roboHardware.goDrive(this, 1.0, 1);
         roboHardware.stopDrive();
+        sleep(500);
+        roboHardware.wristServo.setPosition(0);
+        roboHardware.presetArm(true,this);
+        sleep(500);
+        roboHardware.clawGrab(0,0);
+        sleep(500);
+        roboHardware.presetArm(false,this);
+        sleep(500);
+        roboHardware.goDrive(this, 0.5, -1);
+        roboHardware.turnLeft(this);
+        roboHardware.turnLeft(this);
+        roboHardware.goDrive(this, 1.5, -1);
 
 
     }

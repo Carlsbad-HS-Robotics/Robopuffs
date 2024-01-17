@@ -7,8 +7,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
-@Autonomous (name = "Right Far Side Autonomous", group = "Autonomous")
-public class RobopuffsRedAutonomous extends LinearOpMode {
+@Autonomous (name = "Blue Far Side Autonomous", group = "Autonomous")
+public class BlueFarAuto extends LinearOpMode {
 
     private ElapsedTime autoTime = new ElapsedTime();
 
@@ -31,24 +31,21 @@ public class RobopuffsRedAutonomous extends LinearOpMode {
         roboHardware.backRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         roboHardware.frontRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
+        //6 mats
 
         //1 mat = 915 milliseconds
-        long firstDrive = (915*2+20) ;
-        roboHardware.goDrive(this, firstDrive); //first drive forward
-        sleep(1000);
-
-        //Move slightly away from wall? Add code another time
-
-        roboHardware.turnRight(this); //Turn to truss
-
-        sleep(1000);
-
-        roboHardware.goDrive(this, (915*4)); //Move to backstage
+        roboHardware.clawGrab(1,1);
+        sleep(500);
+        roboHardware.presetArm(false, this);
+        sleep(500);
+        roboHardware.goDrive(this, 2.2, 1); //first drive forward
+        sleep(500);
+        roboHardware.turnRight(this); //Turn to truss; turns left not red for some reason
+        sleep(500);
+        roboHardware.presetArm(false,this);
+        sleep(500);
+        roboHardware.goDrive(this, 4, 1); //Move to backstage
 
 
     }
-
-
-
-
 }

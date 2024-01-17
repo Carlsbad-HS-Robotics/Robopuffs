@@ -35,16 +35,11 @@ public class RobotHardware {
     public DcMotor armMotor;
     public static boolean extendedState = false;
 
-    public long moveTime = 5000; //Hook movement time (in milliseconds)
+    public long moveTime = 5100; //Hook movement time (in milliseconds)
 
     public Servo wristServo;
-    int wristPos = 0;
-    public static boolean wristState = true;
-    public static boolean clawClenched = false;
     public Servo leftClaw;
-    public boolean leftClawClenched;
     public Servo rightClaw;
-    public boolean rightClawClenched;
 
     public IMU imu;
     public HardwareMap hardwareMap;
@@ -117,7 +112,7 @@ public class RobotHardware {
         //WRIST SERVO
         wristServo = hardwareMap.get(Servo.class, "wristServo");
         wristServo.setDirection(Servo.Direction.FORWARD);
-        wristServo.scaleRange(0.35, 0.9);
+        wristServo.scaleRange(0, 1);
 
         //CLAW SERVOS
         leftClaw = hardwareMap.get(Servo.class, "leftClaw");
@@ -201,9 +196,23 @@ public class RobotHardware {
     }
 
     //TELEOP FUNCTIONS
-    public void hookMove(LinearOpMode teleop, boolean y) {
+
+    public void hookMove(LinearOpMode teleop, boolean y, boolean a, boolean start1, boolean start2) {
         //Extended State true = not extended
+
         if (y) {
+            hookMotor.setPower(1);
+        } else if (a && !start1 && !start2) {
+            hookMotor.setPower(-1);
+        } else {
+            hookMotor.setPower(0);
+        }
+
+        /*
+
+        if (y) {
+            stopDrive();
+            //clawGrab(1,1);
             if (extendedState) {
                 //NOT extended
                 hookMotor.setPower(-1);
@@ -219,8 +228,22 @@ public class RobotHardware {
             extendedState = !extendedState;
         }
 
+         */
 
-    } //Move hoisting hooks and flip the swing
+
+    } //Move hoisting hooks
+    public void hookSwing(LinearOpMode teleop, boolean up, boolean down) {
+        if (up) {
+            flipMotor.setPower(-0.30);
+            teleop.sleep(800);
+            flipMotor.setPower(0);
+        }
+        if (down) {
+            flipMotor.setPower(0.30);
+            teleop.sleep(800);
+            flipMotor.setPower(0);
+        }
+    }
 
     public void armMovement (double y) {
 
@@ -262,7 +285,6 @@ public class RobotHardware {
     } //launch the airplane
 
     public void clawGrab(float leftT, float rightT) {
-
         //Larger servo position = farther out
 
         if (leftT > 0.5) {
@@ -272,7 +294,7 @@ public class RobotHardware {
         }
 
         if (rightT > 0.5) {
-            rightClaw.setPosition(0.060);
+            rightClaw.setPosition(0.059);
         } else if (rightT <= 0.5) {
             rightClaw.setPosition(0.09);
         }
@@ -280,36 +302,51 @@ public class RobotHardware {
     } //Move the claws (individually)
 
     public void presetArm(boolean direction, LinearOpMode teleop) {
-        //Direction true = up
-        //Direction false = down
+        //Direction true = towards front
+        //Direction false = towards back
         if (direction) {
-            //Move arm up/ towards back
             armMotor.setPower(1);
-            teleop.sleep(2500);
+            teleop.sleep(1000); //Should be 1500
             armMotor.setPower(0);
         }
         else if (!direction) {
-            //Move arm down/ towards front
             armMotor.setPower(-1);
-            teleop.sleep(2500);
+            teleop.sleep(1000); //should be 1500
             armMotor.setPower(0);
         }
     }
 
-    public void testEncoders() {
+    public void testEncoders(boolean dir) {
+        //armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        if (dir) {
+            armMotor.setTargetPosition(-300);
+            armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            armMotor.setPower(1);
+            armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        }
+        else if (!dir) {
+            armMotor.setTargetPosition(300);
+            armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            armMotor.setPower(1);
+            armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        }
+
+
+    }
+    public void resetEncoderZero () {
         armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        armMotor.setTargetPosition(-100);
-        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        armMotor.setPower(1);
+        armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     //AUTONOMOUS FUNCTIONS
-    double driveSpeed = 0.5;
-    public void goDrive(LinearOpMode teleop, long driveTime) {
-        backLeftMotor.setPower(driveSpeed);
-        backRightMotor.setPower(driveSpeed);
-        frontLeftMotor.setPower(driveSpeed);
-        frontRightMotor.setPower(driveSpeed);
+    double driveSpeed = -0.5;
+    public void goDrive(LinearOpMode teleop, double numMats, int dir) {
+        //915 ms is one mat
+        backLeftMotor.setPower(driveSpeed*dir);
+        backRightMotor.setPower(driveSpeed*dir);
+        frontLeftMotor.setPower(driveSpeed*dir);
+        frontRightMotor.setPower(driveSpeed*dir);
+        int driveTime = (int) numMats * 915;
         teleop.sleep(driveTime);
         stopDrive();
 
@@ -320,23 +357,23 @@ public class RobotHardware {
         frontLeftMotor.setPower(0);
         frontRightMotor.setPower(0);
     } //stop
+
+    int turnTime = 820;
     public void turnRight(LinearOpMode teleop) {
-        backLeftMotor.setPower(driveSpeed);
-        backRightMotor.setPower(-driveSpeed);
-        frontLeftMotor.setPower(driveSpeed);
-        frontRightMotor.setPower(-driveSpeed);
-        teleop.sleep(830);
-        stopDrive();
-    }
-    public void turnLeft(LinearOpMode teleop) {
         backLeftMotor.setPower(-driveSpeed);
         backRightMotor.setPower(driveSpeed);
         frontLeftMotor.setPower(-driveSpeed);
         frontRightMotor.setPower(driveSpeed);
-        teleop.sleep(830);
+        teleop.sleep(turnTime);
         stopDrive();
     }
-
-
+    public void turnLeft(LinearOpMode teleop) {
+        backLeftMotor.setPower(driveSpeed);
+        backRightMotor.setPower(-driveSpeed);
+        frontLeftMotor.setPower(driveSpeed);
+        frontRightMotor.setPower(-driveSpeed);
+        teleop.sleep(turnTime);
+        stopDrive();
+    }
 
 } // class RobotHardware

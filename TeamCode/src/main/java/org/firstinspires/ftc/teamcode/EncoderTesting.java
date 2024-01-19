@@ -42,8 +42,8 @@ public class EncoderTesting extends LinearOpMode {
     @Override
     public void runOpMode() {
         this.telemetry.addData("Status: ", "TeleOp Not Initialized");
-        RobotHardware roboHardware = new RobotHardware(hardwareMap);
-        roboHardware.initialize(true);
+        RobotHardware roboHardware = new RobotHardware(hardwareMap, this);
+        roboHardware.initialize();
         this.telemetry.addData("Status: ", "TeleOp Initialized");
         this.telemetry.update();
 

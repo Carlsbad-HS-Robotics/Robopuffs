@@ -27,8 +27,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode;
+/*
+Robopuffs 2023-2024: CenterStage
+Author: Brielle McBarron
+ */
 
+package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -41,8 +45,8 @@ public class RPTeleOp extends LinearOpMode {
     @Override
     public void runOpMode() {
         this.telemetry.addData("Status: ", "TeleOp Not Initialized");
-        RobotHardware roboHardware = new RobotHardware(hardwareMap);
-        roboHardware.initialize(true);
+        RobotHardware roboHardware = new RobotHardware(hardwareMap, this);
+        roboHardware.initialize();
         this.telemetry.addData("Status: ", "TeleOp Initialized");
         this.telemetry.update();
 
@@ -51,12 +55,18 @@ public class RPTeleOp extends LinearOpMode {
 
 
         while (opModeIsActive()) {
-            roboHardware.fieldCentricDrive(gamepad1.right_stick_x, gamepad1.right_stick_y, gamepad1.left_stick_x, this);
+            roboHardware.fieldCentricDrive(gamepad1.right_stick_x, gamepad1.right_stick_y, gamepad1.left_stick_x);
             roboHardware.armMovement(gamepad2.left_stick_y);
             roboHardware.clawGrab(gamepad2.left_trigger, gamepad2.right_trigger); //Claw: gamepad 2 triggers
-            roboHardware.hookMove(this, gamepad1.y, gamepad1.a, gamepad1.start, gamepad2.start); //Hook: gamepad1 y up, a down (hold)
-            roboHardware.launchAirplane(this, gamepad2.y); //2Y
-            roboHardware.hookSwing(this, gamepad1.dpad_up, gamepad1.dpad_down); //1 Dpad Up & Down
+            roboHardware.hookMove(gamepad1.y, gamepad1.a, gamepad1.start, gamepad2.start); //Hook: gamepad1 y up, a down (hold)
+            roboHardware.launchAirplane(gamepad2.y); //2Y
+
+            if (gamepad1.dpad_up) {
+                roboHardware.hookSwing(true);
+            }
+            else if (gamepad1.dpad_down) {
+                roboHardware.hookSwing(false);
+            }
 
             //WRIST
             if (gamepad2.left_bumper) {
@@ -65,29 +75,10 @@ public class RPTeleOp extends LinearOpMode {
             else if (gamepad2.right_bumper) {
                 roboHardware.wristServo.setPosition(0.7);
             } //If it's in pickup position / towards front
+
             //IMU
             if (gamepad1.x) {
-                roboHardware.reinitImu();
-            }
-
-            //HOOK SWING
-
-            //Dpad up = swing upright & vice versa
-
-            telemetry.update();
-
-            //ARM PRESETS
-            /*
-            if (gamepad2.dpad_up) {
-                roboHardware.presetArm(false, this);
-            }
-            else if (gamepad2.dpad_down) {
-                roboHardware.presetArm(true, this);
-            }
-             */
-
-            if (gamepad1.b) {
-                roboHardware.goDrive(this, 1, 1);
+                roboHardware.reInitImu();
             }
 
         }

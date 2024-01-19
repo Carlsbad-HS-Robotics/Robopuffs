@@ -16,8 +16,8 @@ public class BackupAuto extends LinearOpMode {
 
         this.telemetry.addData("Status: ", "Not Initialized");
         this.telemetry.update();
-        RobotHardware roboHardware = new RobotHardware(hardwareMap);
-        roboHardware.initialize(true);
+        RobotHardware roboHardware = new RobotHardware(hardwareMap, this);
+        roboHardware.initialize();
         this.telemetry.addData("Status: ", "Initialized");
         this.telemetry.update();
 
@@ -25,7 +25,7 @@ public class BackupAuto extends LinearOpMode {
         autoTime.reset();
 
         //1 mat = 915 milliseconds
-        roboHardware.goDrive(this,2.3, -1);
+        roboHardware.goDrive(2.3, -1);
 
     }
 }

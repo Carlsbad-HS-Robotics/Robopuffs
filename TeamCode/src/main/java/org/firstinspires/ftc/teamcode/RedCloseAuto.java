@@ -17,8 +17,8 @@ public class RedCloseAuto extends LinearOpMode {
 
         this.telemetry.addData("Status: ", "Not Initialized");
         this.telemetry.update();
-        RobotHardware roboHardware = new RobotHardware(hardwareMap);
-        roboHardware.initialize(true);
+        RobotHardware roboHardware = new RobotHardware(hardwareMap, this);
+        roboHardware.initialize();
         this.telemetry.addData("Status: ", "Initialized");
         this.telemetry.update();
 
@@ -31,26 +31,26 @@ public class RedCloseAuto extends LinearOpMode {
         //Grab the pixels
         roboHardware.clawGrab(1, 1);
         sleep(500);
-        roboHardware.presetArm(false,this);
+        roboHardware.presetArm(false);
         sleep(500);
-        roboHardware.goDrive(this, 0.2, 1);
-        roboHardware.turnRight(this);
+        roboHardware.goDrive(0.2, 1);
+        roboHardware.turnRight();
         sleep(500);
         //Move backward
-        roboHardware.goDrive(this, 1.0, 1);
+        roboHardware.goDrive(1.0, 1);
         roboHardware.stopDrive();
         sleep(500);
         roboHardware.wristServo.setPosition(0);
-        roboHardware.presetArm(true,this);
+        roboHardware.presetArm(true);
         sleep(500);
         roboHardware.clawGrab(0,0);
         sleep(500);
-        roboHardware.presetArm(false,this);
+        roboHardware.presetArm(false);
         sleep(500);
-        roboHardware.goDrive(this, 0.5, -1);
-        roboHardware.turnLeft(this);
-        roboHardware.turnLeft(this);
-        roboHardware.goDrive(this, 1.5, -1);
+        roboHardware.goDrive(0.5, -1);
+        roboHardware.turnLeft();
+        roboHardware.turnLeft();
+        roboHardware.goDrive(1.5, -1);
 
 
     }

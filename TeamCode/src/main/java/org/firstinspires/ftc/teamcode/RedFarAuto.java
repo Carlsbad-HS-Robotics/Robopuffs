@@ -17,8 +17,8 @@ public class RedFarAuto extends LinearOpMode {
 
         this.telemetry.addData("Status: ", "Not Initialized");
         this.telemetry.update();
-        RobotHardware roboHardware = new RobotHardware(hardwareMap);
-        roboHardware.initialize(true);
+        RobotHardware roboHardware = new RobotHardware(hardwareMap, this);
+        roboHardware.initialize();
         this.telemetry.addData("Status: ", "Initialized");
         this.telemetry.update();
 
@@ -36,13 +36,13 @@ public class RedFarAuto extends LinearOpMode {
         sleep(500);
         //roboHardware.presetArm(false, this);
         sleep(500);
-        roboHardware.goDrive(this, 2.2, 1); //first drive forward
+        roboHardware.goDrive( 2.2, 1); //first drive forward
         sleep(500);
-        roboHardware.turnLeft(this); //Turn to truss; turns left not red for some reason
+        roboHardware.turnLeft(); //Turn to truss; turns left not red for some reason
         sleep(500);
-        roboHardware.presetArm(false,this);
+        roboHardware.presetArm(false);
         sleep(500);
-        roboHardware.goDrive(this, 4, 1); //Move to backstage
+        roboHardware.goDrive(4, 1); //Move to backstage
 
     }
 

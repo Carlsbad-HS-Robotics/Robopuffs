@@ -32,10 +32,11 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
-@TeleOp(name="TeleOp", group="TeleOps")
+@TeleOp(name="Encoder Testing", group="TeleOps")
 
-public class RPTeleOp extends LinearOpMode {
+public class EncoderTesting extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
     @Override
@@ -51,45 +52,44 @@ public class RPTeleOp extends LinearOpMode {
 
 
         while (opModeIsActive()) {
-            roboHardware.fieldCentricDrive(gamepad1.right_stick_x, gamepad1.right_stick_y, gamepad1.left_stick_x, this);
-            roboHardware.armMovement(gamepad2.left_stick_y);
-            roboHardware.clawGrab(gamepad2.left_trigger, gamepad2.right_trigger); //Claw: gamepad 2 triggers
-            roboHardware.hookMove(this, gamepad1.y, gamepad1.a, gamepad1.start, gamepad2.start); //Hook: gamepad1 y up, a down (hold)
-            roboHardware.launchAirplane(this, gamepad2.y); //2Y
-            roboHardware.hookSwing(this, gamepad1.dpad_up, gamepad1.dpad_down); //1 Dpad Up & Down
-
-            //WRIST
-            if (gamepad2.left_bumper) {
-                roboHardware.wristServo.setPosition(1);
-            }  //If it's in board position / towards back
-            else if (gamepad2.right_bumper) {
-                roboHardware.wristServo.setPosition(0.7);
-            } //If it's in pickup position / towards front
-            //IMU
-            if (gamepad1.x) {
-                roboHardware.reinitImu();
+            if (gamepad2.b) {
+                roboHardware.armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             }
-
-            //HOOK SWING
-
-            //Dpad up = swing upright & vice versa
-
-            telemetry.update();
-
-            //ARM PRESETS
-            /*
             if (gamepad2.dpad_up) {
-                roboHardware.presetArm(false, this);
+                roboHardware.armMotor.setTargetPosition(-50);
+                roboHardware.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                //roboHardware.armMotor.setPower(1);
+                roboHardware.armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            } else if (gamepad2.dpad_down) {
+                roboHardware.armMotor.setTargetPosition(-50);
+                roboHardware.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                //roboHardware.armMotor.setPower(1);
+                roboHardware.armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            } else if (gamepad2.dpad_left) {
+                roboHardware.armMotor.setTargetPosition(-10);
+                roboHardware.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                //roboHardware.armMotor.setPower(1);
+                roboHardware.armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            } else if (gamepad2.dpad_right) {
+                roboHardware.armMotor.setTargetPosition(-10);
+                roboHardware.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                //roboHardware.armMotor.setPower(1);
+                roboHardware.armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             }
-            else if (gamepad2.dpad_down) {
-                roboHardware.presetArm(true, this);
-            }
-             */
 
-            if (gamepad1.b) {
-                roboHardware.goDrive(this, 1, 1);
+            if (gamepad2.y) {
+                roboHardware.armMotor.setTargetPosition(0);
+                roboHardware.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                roboHardware.armMotor.setPower(1);
+                roboHardware.armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             }
 
+            if (gamepad2.x) {
+                roboHardware.armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            }
+
+            telemetry.addData("Encoder Position: ", roboHardware.armMotor.getCurrentPosition());
+            telemetry.update();
         }
     }
 }

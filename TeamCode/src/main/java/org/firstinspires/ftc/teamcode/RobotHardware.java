@@ -1,41 +1,32 @@
+//TODO add a header to all files
 //hardware class; defines each piece of hardware to be coded
 //Imports: import all Motor classes and functions
 package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-//import com.qualcomm.robotcore.util.ElapsedTime;
+// TODO evaluate unused import statements and remove unneeded ones
 import com.qualcomm.robotcore.hardware.IMU;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class RobotHardware {
 
-    //public ElapsedTime runtime = new ElapsedTime();
-
-    //drive motors:
+    //Drive Motors:
     public DcMotor frontLeftMotor;
     public DcMotor frontRightMotor;
     public DcMotor backLeftMotor;
     public DcMotor backRightMotor;
-
-    //hook motor
-    public DcMotor hookMotor;
+    public DcMotor hookMotor; //hook motor
     public DcMotor flipMotor;
+    public Servo airplaneLauncher; //servo for airplane launch
 
-    public int armMotorCPR;
+    public DcMotor armMotor; //Arm Motor
 
-    //servo for airplane launch
-    public Servo airplaneLauncher;
-
-    //Arm Motor
-    public DcMotor armMotor;
-    public static boolean extendedState = false;
-
-    public long moveTime = 5100; //Hook movement time (in milliseconds)
+    //public long moveTime = 5100; //Hook movement time (in milliseconds)
+    //I MIGHT NEED THIS KAREN I PROMISE
 
     public Servo wristServo;
     public Servo leftClaw;
@@ -46,12 +37,16 @@ public class RobotHardware {
 
     public double angleDiff = 0;
 
+    // TODO: add teleop as parameter to constructor, and save a reference to it above
     public RobotHardware (HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;
     }
 
     public void initialize(boolean imuInit) {
 
+        /* TODO consider refactoring into an 'initializeMotor' function
+         with parameters motor name, direction, etc
+         */
         //DRIVE MOTORS
         frontLeftMotor = hardwareMap.get(DcMotor.class, "frontLeftMotor");
         frontRightMotor = hardwareMap.get(DcMotor.class, "frontRightMotor");
@@ -145,6 +140,7 @@ public class RobotHardware {
 
     } //Reinitialize IMU
     public void fieldCentricDrive (double x, double y, double rx, LinearOpMode teleop) {
+        // TODO remove commented out code
         //teleop.telemetry.addData("gamepadx: ", x);
         //teleop.telemetry.addData("gamepady: ", y);
 
@@ -207,7 +203,7 @@ public class RobotHardware {
         } else {
             hookMotor.setPower(0);
         }
-
+        // TODO remove commented out code
         /*
 
         if (y) {
@@ -232,12 +228,16 @@ public class RobotHardware {
 
 
     } //Move hoisting hooks
+
+    // TODO consider changing the approach to not 'sleep' -- talk to mentors
     public void hookSwing(LinearOpMode teleop, boolean up, boolean down) {
+        // TODO refactor input parameters to one boolean, and refactor 2 lines out of statement
         if (up) {
             flipMotor.setPower(-0.30);
             teleop.sleep(800);
             flipMotor.setPower(0);
         }
+        // TODO make this 'else'
         if (down) {
             flipMotor.setPower(0.30);
             teleop.sleep(800);
@@ -245,6 +245,7 @@ public class RobotHardware {
         }
     }
 
+    // TODO reconsider input->output function, talk to mentors
     public void armMovement (double y) {
 
         double fullPower = 0.9;
@@ -301,6 +302,7 @@ public class RobotHardware {
 
     } //Move the claws (individually)
 
+    // TODO add code comment
     public void presetArm(boolean direction, LinearOpMode teleop) {
         //Direction true = towards front
         //Direction false = towards back
@@ -339,13 +341,13 @@ public class RobotHardware {
     }
 
     //AUTONOMOUS FUNCTIONS
-    double driveSpeed = -0.5;
+    final double AUTODRIVESPEED = -0.5; //The speed of Oswald's drive during Autonomous
     public void goDrive(LinearOpMode teleop, double numMats, int dir) {
         //915 ms is one mat
-        backLeftMotor.setPower(driveSpeed*dir);
-        backRightMotor.setPower(driveSpeed*dir);
-        frontLeftMotor.setPower(driveSpeed*dir);
-        frontRightMotor.setPower(driveSpeed*dir);
+        backLeftMotor.setPower(AUTODRIVESPEED*dir);
+        backRightMotor.setPower(AUTODRIVESPEED*dir);
+        frontLeftMotor.setPower(AUTODRIVESPEED*dir);
+        frontRightMotor.setPower(AUTODRIVESPEED*dir);
         int driveTime = (int) numMats * 915;
         teleop.sleep(driveTime);
         stopDrive();
@@ -360,18 +362,18 @@ public class RobotHardware {
 
     int turnTime = 820;
     public void turnRight(LinearOpMode teleop) {
-        backLeftMotor.setPower(-driveSpeed);
-        backRightMotor.setPower(driveSpeed);
-        frontLeftMotor.setPower(-driveSpeed);
-        frontRightMotor.setPower(driveSpeed);
+        backLeftMotor.setPower(-AUTODRIVESPEED);
+        backRightMotor.setPower(AUTODRIVESPEED);
+        frontLeftMotor.setPower(-AUTODRIVESPEED);
+        frontRightMotor.setPower(AUTODRIVESPEED);
         teleop.sleep(turnTime);
         stopDrive();
     }
     public void turnLeft(LinearOpMode teleop) {
-        backLeftMotor.setPower(driveSpeed);
-        backRightMotor.setPower(-driveSpeed);
-        frontLeftMotor.setPower(driveSpeed);
-        frontRightMotor.setPower(-driveSpeed);
+        backLeftMotor.setPower(AUTODRIVESPEED);
+        backRightMotor.setPower(-AUTODRIVESPEED);
+        frontLeftMotor.setPower(AUTODRIVESPEED);
+        frontRightMotor.setPower(-AUTODRIVESPEED);
         teleop.sleep(turnTime);
         stopDrive();
     }

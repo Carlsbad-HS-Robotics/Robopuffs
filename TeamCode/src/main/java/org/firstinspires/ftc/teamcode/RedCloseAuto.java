@@ -27,6 +27,7 @@ public class RedCloseAuto extends LinearOpMode {
 
         //1 mat = 915 milliseconds
 
+        //NOTE: This autonomous is currently disabled
 
         //Grab the pixels
         roboHardware.clawGrab(1, 1);
@@ -40,7 +41,7 @@ public class RedCloseAuto extends LinearOpMode {
         roboHardware.goDrive(1.0, 1);
         roboHardware.stopDrive();
         sleep(500);
-        roboHardware.wristServo.setPosition(0);
+        //roboHardware.wristServo.setPosition(0);
         roboHardware.presetArm(true);
         sleep(500);
         roboHardware.clawGrab(0,0);

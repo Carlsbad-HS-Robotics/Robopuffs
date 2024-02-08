@@ -21,16 +21,13 @@ public class RobotHardware {
     public DcMotor frontRightMotor;
     public DcMotor backLeftMotor;
     public DcMotor backRightMotor;
-    public DcMotor hookMotor; //hook motor
+    public DcMotor hookMotor;
     public DcMotor flipMotor;
     public Servo airplaneLauncher; //servo for airplane launch
-
-    public DcMotor armMotor; //Arm Motor
-
-    //public long moveTime = 5100; //Hook movement time (in milliseconds)
-    //I MIGHT NEED THIS KAREN I PROMISE
-
-    public Servo wristServo;
+    public DcMotor armMotor;
+    public DcMotor slideMotor;
+    public Servo leftWristServo;
+    public Servo rightWristServo;
     public Servo leftClaw;
     public Servo rightClaw;
     public IMU imu;
@@ -45,6 +42,12 @@ public class RobotHardware {
         this.teleOp = teleOp;
     }
 
+    public void encoderInit () {
+        armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+
     public void initializeMotor (DcMotor motor, boolean forward) {
 
         motor.setPower(0);
@@ -56,7 +59,7 @@ public class RobotHardware {
         } else if (!forward) {
             motor.setDirection(DcMotorSimple.Direction.REVERSE);
         }
-    } //Initializes a DC Motor
+    } //Initializes a DC Motor (mode, zero power behavior, direction)
     public void initialize() {
 
         //DRIVE MOTORS
@@ -83,14 +86,27 @@ public class RobotHardware {
 
         //ARM MOTOR
         armMotor = hardwareMap.get(DcMotor.class, "armMotor");
-        initializeMotor(armMotor, true);
+        initializeMotor(armMotor, false);
         armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        //WRIST SERVO
-        wristServo = hardwareMap.get(Servo.class, "wristServo");
-        wristServo.setDirection(Servo.Direction.FORWARD);
-        wristServo.scaleRange(0, 1);
+        //SLIDE MOTOR
+        slideMotor = hardwareMap.get(DcMotor.class, "slideMotor");
+        initializeMotor(slideMotor, true);
+        slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        slideMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+
+        //WRIST SERVOS
+        leftWristServo = hardwareMap.get(Servo.class, "leftWristServo");
+        leftWristServo.setDirection(Servo.Direction.FORWARD);
+        //leftWristServo.scaleRange(0, 1);
+
+        //TODO: Set servo limits
+
+        rightWristServo = hardwareMap.get(Servo.class, "rightWristServo");
+        rightWristServo.setDirection(Servo.Direction.FORWARD);
+        //rightWristServo.scaleRange(0, 1);
 
         //CLAW SERVOS
         leftClaw = hardwareMap.get(Servo.class, "leftClaw");
@@ -115,10 +131,10 @@ public class RobotHardware {
         } else {
             imu = hardwareMap.get(IMU.class, "imu");
         }
-        //Test Field centric, if it doesn't work try putting 140 into code
-         */
 
-    } //init function
+         */ //Test Field centric, if it doesn't work try uncommenting this
+
+    } //initialize function
     public void reInitImu() {
         double newHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
         angleDiff = -newHeading;
@@ -130,7 +146,7 @@ public class RobotHardware {
         double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
         botHeading = botHeading+angleDiff;
 
-        // Rotate the movement direction counter to the bot's rotation
+        // Rotate the movement direction counter to the robot's rotation
         double rotX = x * Math.cos(-botHeading) + y * Math.sin(-botHeading);
         double rotY = -x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
 
@@ -169,46 +185,26 @@ public class RobotHardware {
 
     public void hookMove(boolean y, boolean a, boolean start1, boolean start2) {
 
+        //if y, up; if a, down
         if (y) {
             hookMotor.setPower(1);
         } else if (a && !start1 && !start2) {
+            //^ start1 & start2 are for not making the hook move while the driver is trying to initialize
             hookMotor.setPower(-1);
         } else {
             hookMotor.setPower(0);
         }
 
-        //Extended State true = not extended
-        /*
-
-        if (y) {
-            stopDrive();
-            //clawGrab(1,1);
-            if (extendedState) {
-                //NOT extended
-                hookMotor.setPower(-1);
-                teleop.sleep(moveTime);
-            }
-            else if (!extendedState) {
-
-                hookMotor.setPower(1);
-                teleop.sleep(moveTime);
-            } //If it's extended fully or halfway
-
-            hookMotor.setPower(0);
-            extendedState = !extendedState;
-        }
-
-         */
-
-
     } //Move hoisting hooks
 
     // TODO consider changing the approach to not 'sleep' -- talk to mentors
-    public void hookSwing(boolean up) {
-        if (up) {
+    public void hookSwing(boolean up, boolean down) {
+        if (up && !down) {
+            //if dpad up is pressed, swing the hook vertical
             flipMotor.setPower(-0.30);
         }
-        else if (!up) { //down
+        else if (down && !up) { //down
+            //if dpad down is pressed, swing the hook horizontal to ground
             flipMotor.setPower(0.30);
         }
         teleOp.sleep(800);
@@ -216,36 +212,40 @@ public class RobotHardware {
     }
 
     // TODO reconsider input->output function, talk to mentors
+
+    int targetPos = 0;
     public void armMovement (double y) {
 
-        double fullPower = 0.9;
-        double mediumPower = 0.4;
-        double minimalPower = 0.2;
+        targetPos = armMotor.getCurrentPosition();
 
-        double multiplier = y / Math.abs(y); //Determines if positive or negative power
-        //Note: Above should be positive 1 if positive power (0.8 / 0.8 = 1) & negative 1 if negative power (-0.8 / 0.8 = -1)
-        y = Math.abs(y);
+        targetPos = targetPos + ((int) y * 1000);
 
-        if (y > 0.7) {
-            armMotor.setPower(fullPower * multiplier);
-        } //fast
-        else if (y > 0.25) {
-            armMotor.setPower(mediumPower * multiplier);
-        } //medium
-        else if (y > 0) {
-            armMotor.setPower(minimalPower);
-        } // backward
-        else {
-            armMotor.setPower(0);
-        } //no movement
+        /*
+        int maxArmLimit = 10000;
+        int minArmLimit = -10000;
+
+        if (targetPos > maxArmLimit || targetPos < minArmLimit) {
+            targetPos = armMotor.getCurrentPosition();
+        }
+
+         */ //Limits on encoders
+
+        armMotor.setTargetPosition(targetPos);
+        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        armMotor.setPower(0.5);
     } //arm movement
 
     public void launchAirplane(boolean launchState) {
-        stopDrive();
-        airplaneLauncher.setPosition(0.3);
-        airplaneLauncher.setPosition(0.8);
-        teleOp.sleep(500);
-        airplaneLauncher.setPosition(0.3);
+
+        //if y is pressed,
+        if (launchState) {
+            stopDrive();
+            airplaneLauncher.setPosition(0.3);
+            airplaneLauncher.setPosition(0.8);
+            teleOp.sleep(500);
+            airplaneLauncher.setPosition(0.3);
+        }
+
     } //launch the airplane
 
     public void clawGrab(float leftT, float rightT) {
@@ -264,6 +264,26 @@ public class RobotHardware {
         }
 
     } //Move the claws (individually)
+
+    public void slideMovement(double y) {
+        targetPos = armMotor.getCurrentPosition();
+
+        targetPos = targetPos + ((int) y * 1000);
+
+        /*
+        int maxArmLimit = 10000;
+        int minArmLimit = -10000;
+
+        if (targetPos > maxArmLimit || targetPos < minArmLimit) {
+            targetPos = armMotor.getCurrentPosition();
+        }
+
+         */ //Limits on encoders
+
+        armMotor.setTargetPosition(targetPos);
+        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        armMotor.setPower(0.5);
+    }
 
     //AUTONOMOUS FUNCTIONS
 

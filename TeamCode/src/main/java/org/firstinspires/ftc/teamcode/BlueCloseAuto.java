@@ -27,6 +27,8 @@ public class BlueCloseAuto extends LinearOpMode {
 
         //1 mat = 915 milliseconds
 
+        //NOTE: This autonomous is currently disabled
+
         //Grab the pixels
         roboHardware.presetArm(true); //Put arm down
         sleep(500);
@@ -37,7 +39,7 @@ public class BlueCloseAuto extends LinearOpMode {
         roboHardware.goDrive(0.2, 1); //move slightly forward
         roboHardware.turnRight(); //turn towards backstage
         roboHardware.goDrive( 1, 1); //move to backstage
-        roboHardware.wristServo.setPosition(0);
+        //roboHardware.wristServo.setPosition(0);
         roboHardware.presetArm(true); //put down arm
         sleep(500);
         roboHardware.clawGrab(0,0); //open claw (let go of pixel)

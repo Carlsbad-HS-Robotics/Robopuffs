@@ -50,46 +50,15 @@ public class EncoderTesting extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
+        int degrees = 0;
+        int secondDeg = 1000;
+
+        roboHardware.armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        roboHardware.armMotor.setDirection(DcMotor.Direction.REVERSE);
+        int targetPos = 0;
 
         while (opModeIsActive()) {
-            if (gamepad2.b) {
-                roboHardware.armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            }
-            if (gamepad2.dpad_up) {
-                roboHardware.armMotor.setTargetPosition(-50);
-                roboHardware.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                //roboHardware.armMotor.setPower(1);
-                roboHardware.armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            } else if (gamepad2.dpad_down) {
-                roboHardware.armMotor.setTargetPosition(-50);
-                roboHardware.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                //roboHardware.armMotor.setPower(1);
-                roboHardware.armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            } else if (gamepad2.dpad_left) {
-                roboHardware.armMotor.setTargetPosition(-10);
-                roboHardware.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                //roboHardware.armMotor.setPower(1);
-                roboHardware.armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            } else if (gamepad2.dpad_right) {
-                roboHardware.armMotor.setTargetPosition(-10);
-                roboHardware.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                //roboHardware.armMotor.setPower(1);
-                roboHardware.armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            }
 
-            if (gamepad2.y) {
-                roboHardware.armMotor.setTargetPosition(0);
-                roboHardware.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                roboHardware.armMotor.setPower(1);
-                roboHardware.armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            }
-
-            if (gamepad2.x) {
-                roboHardware.armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            }
-
-            telemetry.addData("Encoder Position: ", roboHardware.armMotor.getCurrentPosition());
-            telemetry.update();
         }
     }
 }

@@ -35,6 +35,7 @@ Author: Brielle McBarron
 package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp(name="TeleOp", group="TeleOps")
@@ -53,33 +54,56 @@ public class RPTeleOp extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
+        roboHardware.armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        roboHardware.armMotor.setDirection(DcMotor.Direction.REVERSE);
+        //TODO: Try putting lines 57 & 58 (above two lines) into initialize instead
 
         while (opModeIsActive()) {
+            //Gamepad 1 Calls
             roboHardware.fieldCentricDrive(gamepad1.right_stick_x, gamepad1.right_stick_y, gamepad1.left_stick_x);
-            roboHardware.armMovement(gamepad2.left_stick_y);
-            roboHardware.clawGrab(gamepad2.left_trigger, gamepad2.right_trigger); //Claw: gamepad 2 triggers
-            roboHardware.hookMove(gamepad1.y, gamepad1.a, gamepad1.start, gamepad2.start); //Hook: gamepad1 y up, a down (hold)
-            roboHardware.launchAirplane(gamepad2.y); //2Y
-
-            if (gamepad1.dpad_up) {
-                roboHardware.hookSwing(true);
-            }
-            else if (gamepad1.dpad_down) {
-                roboHardware.hookSwing(false);
-            }
-
-            //WRIST
-            if (gamepad2.left_bumper) {
-                roboHardware.wristServo.setPosition(1);
-            }  //If it's in board position / towards back
-            else if (gamepad2.right_bumper) {
-                roboHardware.wristServo.setPosition(0.7);
-            } //If it's in pickup position / towards front
-
-            //IMU
+            roboHardware.hookMove(gamepad1.y, gamepad1.a, gamepad1.start, gamepad2.start);
             if (gamepad1.x) {
                 roboHardware.reInitImu();
+            } //Reset IMU
+            //Gamepad 2 Calls
+            roboHardware.armMovement(gamepad2.right_stick_y);
+            roboHardware.clawGrab(gamepad2.left_trigger, gamepad2.right_trigger);
+            roboHardware.launchAirplane(gamepad2.y);
+            roboHardware.hookSwing(gamepad2.dpad_up, gamepad2.dpad_down);
+
+            telemetry.addData("Arm Encoder Position: ", roboHardware.armMotor.getCurrentPosition());
+
+            //TODO: find how many encoder wires do we have?
+            //Ideally want to use encoders for: arm (done), slider, hook, and hook swing.
+            //Priority: 1. Slider, 2. Hook 3. Swing
+
+            //TODO: take off tape from arm motor
+
+
+
+            //TODO: Test servos and see direction, position, etc.
+            if (gamepad2.right_bumper) {
+                roboHardware.leftWristServo.setPosition(0.5); //Less = [Direction]
+            } else if (gamepad2.left_bumper) {
+                roboHardware.leftWristServo.setPosition(0.7); //More = [Direction]
             }
+
+            telemetry.update();
+
+
+            /*
+            Gamepad 1 Functions:
+            * Movement (right stick)
+            * Turning (right stick)
+            * Hook compression/ extension (y = extend, a = compress)
+            * Reinitialize (x)
+
+            Gamepad 2 Functions:
+            * Arm (right stick)
+            * Hook swing (dpad up = vertical, dpad down = horizontal)
+            * Claws (left & right trigger for corresponding claws)
+            * Airplane Launch (y)
+            */
 
         }
     }

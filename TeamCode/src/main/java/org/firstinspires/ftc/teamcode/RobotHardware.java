@@ -221,18 +221,19 @@ public class RobotHardware {
         targetPos = targetPos + ((int) y * 1000);
 
         /*
-        int maxArmLimit = 10000;
-        int minArmLimit = -10000;
+        int maxArmLimit = 1000;
+        int minArmLimit = -1000;
 
         if (targetPos > maxArmLimit || targetPos < minArmLimit) {
             targetPos = armMotor.getCurrentPosition();
-        }
 
-         */ //Limits on encoders
+        } //Limits on encoders
+
+         */
 
         armMotor.setTargetPosition(targetPos);
         armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        armMotor.setPower(0.5);
+        armMotor.setPower(1);
     } //arm movement
 
     public void launchAirplane(boolean launchState) {

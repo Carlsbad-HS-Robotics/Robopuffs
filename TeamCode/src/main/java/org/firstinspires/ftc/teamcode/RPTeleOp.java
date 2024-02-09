@@ -54,6 +54,8 @@ public class RPTeleOp extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
+        //int targetPos = 0;
+
         roboHardware.armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         roboHardware.armMotor.setDirection(DcMotor.Direction.REVERSE);
         //TODO: Try putting lines 57 & 58 (above two lines) into initialize instead
@@ -65,11 +67,15 @@ public class RPTeleOp extends LinearOpMode {
             if (gamepad1.x) {
                 roboHardware.reInitImu();
             } //Reset IMU
+
             //Gamepad 2 Calls
             roboHardware.armMovement(gamepad2.right_stick_y);
             roboHardware.clawGrab(gamepad2.left_trigger, gamepad2.right_trigger);
             roboHardware.launchAirplane(gamepad2.y);
-            roboHardware.hookSwing(gamepad2.dpad_up, gamepad2.dpad_down);
+            //roboHardware.hookSwing(gamepad2.dpad_up, gamepad2.dpad_down); //TODO: Why is this causing problem
+            if (gamepad2.x) {
+                roboHardware.encoderInit();
+            }
 
             telemetry.addData("Arm Encoder Position: ", roboHardware.armMotor.getCurrentPosition());
 

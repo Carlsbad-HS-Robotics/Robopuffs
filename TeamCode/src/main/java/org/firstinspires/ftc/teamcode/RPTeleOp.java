@@ -54,61 +54,59 @@ public class RPTeleOp extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-        //int targetPos = 0;
-
-        roboHardware.armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        roboHardware.armMotor.setDirection(DcMotor.Direction.REVERSE);
-        //TODO: Try putting lines 57 & 58 (above two lines) into initialize instead
-
+        //roboHardware.setWristPos(true, false, false); //puts wrist at position 0 (highest)
+        roboHardware.hookMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         while (opModeIsActive()) {
-            //Gamepad 1 Calls
+            //GAMEPAD 1 CALLS
             roboHardware.fieldCentricDrive(gamepad1.right_stick_x, gamepad1.right_stick_y, gamepad1.left_stick_x);
-            roboHardware.hookMove(gamepad1.y, gamepad1.a, gamepad1.start, gamepad2.start);
+            //roboHardware.hookMove(gamepad2.x);
+            if (gamepad2.y) {
+                roboHardware.hookMotor.setPower(1);
+            }
+            else if (gamepad2.a) {
+                roboHardware.hookMotor.setPower(-1);
+            }
+            else {
+                roboHardware.hookMotor.setPower(0);
+            }
+
+            roboHardware.hookSwing(gamepad1.dpad_down, gamepad1.dpad_up);
             if (gamepad1.x) {
                 roboHardware.reInitImu();
             } //Reset IMU
 
-            //Gamepad 2 Calls
-            roboHardware.armMovement(gamepad2.right_stick_y);
+            //GAMEPAD 2 CALLS
+            //roboHardware.armMovement(gamepad2.right_stick_y);
+
+            if (gamepad2.right_stick_y > 0) {
+                roboHardware.armMotor.setPower(0.5);
+            }
+            else if (gamepad2.right_stick_y < 0) {
+                roboHardware.armMotor.setPower(-0.5);
+            }
+            else {
+                roboHardware.armMotor.setPower(0);
+            }
+
+            roboHardware.slideMovement(gamepad2.left_stick_y);
+
             roboHardware.clawGrab(gamepad2.left_trigger, gamepad2.right_trigger);
-            roboHardware.launchAirplane(gamepad2.y);
-            //roboHardware.hookSwing(gamepad2.dpad_up, gamepad2.dpad_down); //TODO: Why is this causing problem
-            if (gamepad2.x) {
-                roboHardware.encoderInit();
-            }
-
-            telemetry.addData("Arm Encoder Position: ", roboHardware.armMotor.getCurrentPosition());
-
-            //TODO: find how many encoder wires do we have?
-            //Ideally want to use encoders for: arm (done), slider, hook, and hook swing.
-            //Priority: 1. Slider, 2. Hook 3. Swing
-
-            //TODO: take off tape from arm motor
-
-
-
-            //TODO: Test servos and see direction, position, etc.
-            if (gamepad2.right_bumper) {
-                roboHardware.leftWristServo.setPosition(0.5); //Less = [Direction]
-            } else if (gamepad2.left_bumper) {
-                roboHardware.leftWristServo.setPosition(0.7); //More = [Direction]
-            }
-
-            telemetry.update();
-
+            roboHardware.setWristPos(gamepad2.dpad_up, gamepad2.dpad_down, gamepad2.dpad_left);
+            roboHardware.launchAirplane(gamepad2.b, gamepad1.start, gamepad2.start); //Airplane:
 
             /*
             Gamepad 1 Functions:
             * Movement (right stick)
             * Turning (right stick)
-            * Hook compression/ extension (y = extend, a = compress)
-            * Reinitialize (x)
+            * Hook swing (dpad up = vertical, dpad down = horizontal)
+            * Reinitialize IMU (X)
 
             Gamepad 2 Functions:
             * Arm (right stick)
-            * Hook swing (dpad up = vertical, dpad down = horizontal)
+            * Wrist (Dpad up = up, Dpad left = horizontal, dpad down = down
             * Claws (left & right trigger for corresponding claws)
-            * Airplane Launch (y)
+            * Hook compression/ extension (Y = extend, A = compress)
+            * Airplane Launch (B)
             */
 
         }

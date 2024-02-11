@@ -43,7 +43,7 @@ public class BlueFarAuto extends LinearOpMode {
         roboHardware.turnRight(); //Turn to truss; turns left not red for some reason
         sleep(500);
         roboHardware.hookSwing(false, true);
-        roboHardware.presetArm(false);
+        roboHardware.armMovement(1.0);
         sleep(500);
         roboHardware.goDrive( 4, 1); //Move to backstage
 

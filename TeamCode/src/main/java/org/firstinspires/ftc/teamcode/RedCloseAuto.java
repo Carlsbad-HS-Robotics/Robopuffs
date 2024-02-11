@@ -30,6 +30,7 @@ public class RedCloseAuto extends LinearOpMode {
         //NOTE: This autonomous is currently disabled
 
         //Grab the pixels
+        /*
         roboHardware.clawGrab(1, 1);
         sleep(500);
         roboHardware.presetArm(false);
@@ -53,6 +54,9 @@ public class RedCloseAuto extends LinearOpMode {
         roboHardware.turnLeft();
         roboHardware.goDrive(1.5, -1);
 
+         */
+
+        roboHardware.goDrive(1.2, -1);
 
     }
 }

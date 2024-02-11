@@ -30,6 +30,7 @@ public class BlueCloseAuto extends LinearOpMode {
         //NOTE: This autonomous is currently disabled
 
         //Grab the pixels
+        /*
         roboHardware.presetArm(true); //Put arm down
         sleep(500);
         roboHardware.clawGrab(1, 1); //close claw (grab pixel)
@@ -52,6 +53,10 @@ public class BlueCloseAuto extends LinearOpMode {
         roboHardware.goDrive(1.0, -1); //go backwards into backstage
         roboHardware.stopDrive();
         sleep(500);
+
+         */
+
+        roboHardware.goDrive(1.2, -1);
 
     }
 }

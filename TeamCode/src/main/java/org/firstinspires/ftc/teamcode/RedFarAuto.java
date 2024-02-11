@@ -36,13 +36,14 @@ public class RedFarAuto extends LinearOpMode {
         sleep(500);
         //roboHardware.presetArm(false, this);
         sleep(500);
-        roboHardware.goDrive( 2.2, 1); //first drive forward
+        roboHardware.goDrive(2.2, 1); //first drive forward
         sleep(500);
-        roboHardware.turnLeft(); //Turn to truss; turns left not red for some reason
+        roboHardware.turnRight(); //Turn to truss; turns left not red for some reason
         sleep(500);
-        roboHardware.presetArm(false);
+        roboHardware.hookSwing(false, true);
+        roboHardware.armMovement(0.5);
         sleep(500);
-        roboHardware.goDrive(4, 1); //Move to backstage
+        roboHardware.goDrive( 4, 1); //Move to backstage
 
     }
 

@@ -50,15 +50,14 @@ public class EncoderTesting extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-        int degrees = 0;
-        int secondDeg = 1000;
-
-        roboHardware.armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        roboHardware.armMotor.setDirection(DcMotor.Direction.REVERSE);
-        int targetPos = 0;
-
         while (opModeIsActive()) {
-
+            if (gamepad2.left_bumper) {
+                roboHardware.hookMotor.setPower(1);
+            } else if (gamepad2.right_bumper) {
+                roboHardware.hookMotor.setPower(-1);
+            } else {
+                roboHardware.hookMotor.setPower(0);
+            }
         }
     }
 }

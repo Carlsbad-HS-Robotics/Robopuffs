@@ -31,6 +31,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
@@ -50,14 +51,15 @@ public class EncoderTesting extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
+        roboHardware.backLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        roboHardware.frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        roboHardware.backRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        roboHardware.frontRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        roboHardware.turnRight();
+
         while (opModeIsActive()) {
-            if (gamepad2.left_bumper) {
-                roboHardware.hookMotor.setPower(1);
-            } else if (gamepad2.right_bumper) {
-                roboHardware.hookMotor.setPower(-1);
-            } else {
-                roboHardware.hookMotor.setPower(0);
-            }
+
         }
     }
 }

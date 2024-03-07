@@ -35,7 +35,6 @@ public class BlueFarAuto extends LinearOpMode {
 
         //1 mat = 915 milliseconds
         //roboHardware.clawGrab(1,1);
-        sleep(500);
         //roboHardware.presetArm(false, this);
         sleep(500);
         roboHardware.goDrive(2.2, 1); //first drive forward
@@ -43,7 +42,8 @@ public class BlueFarAuto extends LinearOpMode {
         roboHardware.turnRight(); //Turn to truss; turns left not red for some reason
         sleep(500);
         roboHardware.hookSwing(false, true);
-        roboHardware.armMovement(1.0);
+        roboHardware.setWristPos(false, true, false);
+        //roboHardware.armMovement(1.0);
         sleep(500);
         roboHardware.goDrive( 4, 1); //Move to backstage
 

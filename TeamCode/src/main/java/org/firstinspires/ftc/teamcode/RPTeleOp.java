@@ -59,12 +59,14 @@ public class RPTeleOp extends LinearOpMode {
         while (opModeIsActive()) {
             //GAMEPAD 1 CALLS
             roboHardware.fieldCentricDrive(gamepad1.right_stick_x, gamepad1.right_stick_y, gamepad1.left_stick_x);
-            //roboHardware.hookMove(gamepad2.x);
+            //roboHardware.hookMove(gamepad2.y, gamepad2.a);
+
             if (gamepad2.y) {
                 roboHardware.hookMotor.setPower(1);
             }
             else if (gamepad2.a) {
                 roboHardware.hookMotor.setPower(-1);
+                //roboHardware.hookMotor.setTargetPosition(0);
             }
             else {
                 roboHardware.hookMotor.setPower(0);
@@ -87,6 +89,21 @@ public class RPTeleOp extends LinearOpMode {
             else {
                 roboHardware.armMotor.setPower(0);
             }
+
+            if (gamepad2.left_bumper) {
+                roboHardware.flipMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            }
+
+            if (gamepad1.right_bumper) {
+                roboHardware.flipMotor.setTargetPosition(-200);
+                roboHardware.flipMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                roboHardware.flipMotor.setPower(1);
+            }
+
+            //roboHardware.hookMove(gamepad2.y,gamepad2.a);
+
+
+            telemetry.addData("Arm pos: ", roboHardware.armMotor.getCurrentPosition());
 
             roboHardware.slideMovement(gamepad2.left_stick_y);
 

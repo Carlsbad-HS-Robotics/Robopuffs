@@ -6,8 +6,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Disabled
-
 @Autonomous (name = "Red Close Side Autonomous", group = "Autonomous")
 public class RedCloseAuto extends LinearOpMode {
     private ElapsedTime autoTime = new ElapsedTime();
@@ -56,7 +54,7 @@ public class RedCloseAuto extends LinearOpMode {
 
          */
 
-        roboHardware.goDrive(1.2, -1);
+        roboHardware.goDrive(1.5, -1);
 
     }
 }

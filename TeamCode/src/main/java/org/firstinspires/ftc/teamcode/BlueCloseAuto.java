@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Disabled
 
 @Autonomous (name = "Blue Close Side Autonomous", group = "Autonomous")
 public class BlueCloseAuto extends LinearOpMode {
@@ -55,8 +54,8 @@ public class BlueCloseAuto extends LinearOpMode {
         sleep(500);
 
          */
-
-        roboHardware.goDrive(1.2, -1);
+        roboHardware.setWristPos(true, false, false);
+        roboHardware.goDrive(1.5, -1);
 
     }
 }

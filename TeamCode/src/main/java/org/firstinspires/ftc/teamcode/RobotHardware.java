@@ -92,7 +92,8 @@ public class RobotHardware {
 
         //HOOK MOTOR
         hookMotor = hardwareMap.get(DcMotor.class, "hookMotor");
-        initializePowerMotor(hookMotor,true);
+        initializeEncoderMotor(hookMotor,true);
+        hookMotor.setTargetPosition(0);
 
         //HOOK FLIP MOTOR
         flipMotor = hardwareMap.get(DcMotor.class, "flipMotor");
@@ -100,7 +101,7 @@ public class RobotHardware {
 
         //ARM MOTOR
         armMotor = hardwareMap.get(DcMotor.class, "armMotor");
-        initializePowerMotor(armMotor, true);
+        initializeEncoderMotor(armMotor, true);
 
         //SLIDE MOTOR
         slideMotor = hardwareMap.get(DcMotor.class, "slideMotor");
@@ -179,10 +180,12 @@ public class RobotHardware {
         double frontRightPower = (y + x + rx) / denominator;
         double backRightPower = (y - x + rx) / denominator;
 
-        frontLeftPower = frontLeftPower - (frontLeftPower*0.4);
-        frontRightPower = frontRightPower - (frontRightPower*0.4);
-        backLeftPower = backLeftPower - (backLeftPower*0.4);
-        backRightPower = backRightPower - (backRightPower*0.4);
+        double speedModifier = 0.3;
+
+        frontLeftPower = frontLeftPower - (frontLeftPower*speedModifier);
+        frontRightPower = frontRightPower - (frontRightPower*speedModifier);
+        backLeftPower = backLeftPower - (backLeftPower*speedModifier);
+        backRightPower = backRightPower - (backRightPower*speedModifier);
 
         //Sets power to motors
         frontLeftMotor.setPower(frontLeftPower);
@@ -195,23 +198,20 @@ public class RobotHardware {
     int hookTargetPos = 0;
 
     static boolean hookCompressed = false;
-    public void hookMove(boolean x) {
+    public void hookMove(boolean up,boolean down) {
         //13200 is max up
 
-
-        if (x) {
-            if (hookCompressed) {
-                hookTargetPos = 13200;
-                hookCompressed = !hookCompressed;
-            }
-            else if (!hookCompressed) {
-                hookTargetPos = 0;
-                hookCompressed = !hookCompressed;
-            }
+        if (up) {
+            hookTargetPos = 1500;
+        } else if (down) {
+            hookTargetPos = 0;
         }
+
         hookMotor.setTargetPosition(hookTargetPos);
         hookMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        hookMotor.setPower(1);
+        hookMotor.setPower(0.5);
+
+
 
 
     } //Move hoisting hooks
@@ -222,11 +222,13 @@ public class RobotHardware {
             swingTargetPos = 1500;
         } else if (down) {
             swingTargetPos = 0;
+        } else {
+            swingTargetPos = flipMotor.getCurrentPosition();
         }
 
         flipMotor.setTargetPosition(swingTargetPos);
         flipMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        flipMotor.setPower(0.5);
+        flipMotor.setPower(1);
     }
 
     public void setWristPos(boolean dpad_up, boolean dpad_down, boolean dpad_left) {

@@ -51,12 +51,9 @@ import java.util.List;
 //@Disabled
 public class ConceptTensorFlowObjectDetectionEasy extends LinearOpMode {
 
-    private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
-
-    /**
-     * The variable to store our instance of the TensorFlow Object Detection processor.
-     */
-    private TfodProcessor tfod;
+    private static final boolean USE_WEBCAM = true;  //true for webcam, false for phone camera
+    //TODO: Hypothetically we could take this and the if statement that uses it out because we don't use phones and therefore will never ever need it
+    private TfodProcessor tfod; //tfod detects objects
 
     /**
      * The variable to store our instance of the vision portal.
@@ -99,24 +96,23 @@ public class ConceptTensorFlowObjectDetectionEasy extends LinearOpMode {
 
     }   // end runOpMode()
 
-    /**
-     * Initialize the TensorFlow Object Detection processor.
-     */
     private void initTfod() {
 
         // Create the TensorFlow processor the easy way.
         tfod = TfodProcessor.easyCreateWithDefaults();
 
         // Create the vision portal the easy way.
+        //checks if using a built in webcam or separate
         if (USE_WEBCAM) {
             visionPortal = VisionPortal.easyCreateWithDefaults(
                 hardwareMap.get(WebcamName.class, "Webcam"), tfod);
-        } else {
+        }
+        else {
             visionPortal = VisionPortal.easyCreateWithDefaults(
                 BuiltinCameraDirection.BACK, tfod);
         }
 
-    }   // end method initTfod()
+    }   //Initialize webcam (TensorFlow Object Detection processor)
 
     /**
      * Add telemetry about TensorFlow Object Detection (TFOD) recognitions.

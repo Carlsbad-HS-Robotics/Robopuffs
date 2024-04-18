@@ -72,7 +72,7 @@ public class RPTeleOp extends LinearOpMode {
                 roboHardware.hookMotor.setPower(0);
             }
 
-            roboHardware.hookSwing(gamepad1.dpad_down, gamepad1.dpad_up);
+            //roboHardware.hookSwing(gamepad1.dpad_down, gamepad1.dpad_up);
             if (gamepad1.x) {
                 roboHardware.reInitImu();
             } //Reset IMU
@@ -90,14 +90,22 @@ public class RPTeleOp extends LinearOpMode {
                 roboHardware.armMotor.setPower(0);
             }
 
-            if (gamepad2.left_bumper) {
-                roboHardware.flipMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            }
 
-            if (gamepad1.right_bumper) {
+            //hook stuff: taking it off
+            if (gamepad1.dpad_right)
+            {
                 roboHardware.flipMotor.setTargetPosition(-200);
                 roboHardware.flipMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 roboHardware.flipMotor.setPower(1);
+            }  //-200: right from outside (hopefully)
+            else if (gamepad1.dpad_left) {
+                roboHardware.flipMotor.setTargetPosition(200);
+                roboHardware.flipMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                roboHardware.flipMotor.setPower(1);
+            } //+200: left from outside (hopefully)
+
+            if (gamepad2.dpad_down) {
+                roboHardware.flipMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             }
 
             //roboHardware.hookMove(gamepad2.y,gamepad2.a);

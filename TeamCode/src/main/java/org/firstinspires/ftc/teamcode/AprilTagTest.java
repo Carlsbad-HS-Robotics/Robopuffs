@@ -73,18 +73,18 @@ public class AprilTagTest extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        initAprilTag();
+        initAprilTag(); //initializes April tag processor
 
-        // Wait for the DS start button to be touched.
         telemetry.addData("DS preview on/off", "3 dots, Camera Stream");
         telemetry.addData(">", "Touch Play to start OpMode");
         telemetry.update();
+
         waitForStart();
 
         if (opModeIsActive()) {
             while (opModeIsActive()) {
 
-                telemetryAprilTag();
+                telemetryAprilTag(); //detects april tags
 
                 // Push telemetry to the Driver Station.
                 telemetry.update();
@@ -106,9 +106,6 @@ public class AprilTagTest extends LinearOpMode {
 
     }   // end method runOpMode()
 
-    /**
-     * Initialize the AprilTag processor.
-     */
     private void initAprilTag() {
 
         // Create the AprilTag processor the easy way.
@@ -123,14 +120,14 @@ public class AprilTagTest extends LinearOpMode {
                     BuiltinCameraDirection.BACK, aprilTag);
         }
 
-    }   // end method initAprilTag()
+    } //Initializes April Tag processor
 
     /**
      * Add telemetry about AprilTag detections.
      */
     private void telemetryAprilTag() {
 
-        List<AprilTagDetection> currentDetections = aprilTag.getDetections();
+        List<AprilTagDetection> currentDetections = aprilTag.getDetections(); //list of new detections (since last call)
         telemetry.addData("# AprilTags Detected", currentDetections.size());
 
         // Step through the list of detections and display info for each one.

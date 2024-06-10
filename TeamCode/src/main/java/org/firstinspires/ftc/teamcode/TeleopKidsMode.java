@@ -63,38 +63,6 @@ public class TeleopKidsMode extends LinearOpMode {
                 roboHardware.reInitImu();
             } //Reset IMU
 
-            //GAMEPAD 2 CALLS
-            //roboHardware.armMovement(gamepad2.right_stick_y);
-
-            if (gamepad2.right_stick_y > 0) {
-                roboHardware.armMotor.setPower(0.5);
-            }
-            else if (gamepad2.right_stick_y < 0) {
-                roboHardware.armMotor.setPower(-0.5);
-            }
-            else {
-                roboHardware.armMotor.setPower(0);
-            }
-
-            roboHardware.clawGrab(gamepad2.left_trigger, gamepad2.right_trigger);
-            roboHardware.setWristPos(gamepad2.dpad_up, gamepad2.dpad_down, gamepad2.dpad_left);
-            roboHardware.launchAirplane(gamepad1.b, gamepad1.start, gamepad2.start); //Airplane:
-
-            /*
-            Gamepad 1 Functions:
-            * Movement (right stick)
-            * Turning (right stick)
-            * Hook swing (dpad up = vertical, dpad down = horizontal)
-            * Reinitialize IMU (X)
-
-            Gamepad 2 Functions:
-            * Arm (right stick)
-            * Wrist (Dpad up = up, Dpad left = horizontal, dpad down = down
-            * Claws (left & right trigger for corresponding claws)
-            * Hook compression/ extension (Y = extend, A = compress)
-            * Airplane Launch (B)
-            */
-
         }
     }
 }

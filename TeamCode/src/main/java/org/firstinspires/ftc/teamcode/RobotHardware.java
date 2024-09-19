@@ -21,6 +21,8 @@ public class RobotHardware {
     public DcMotor frontRightMotor;
     public DcMotor backLeftMotor;
     public DcMotor backRightMotor;
+
+    /*
     public DcMotor hookMotor;
     public DcMotor flipMotor;
     public Servo airplaneLauncher; //servo for airplane launch
@@ -30,6 +32,8 @@ public class RobotHardware {
     public Servo rightWristServo;
     public Servo leftClaw;
     public Servo rightClaw;
+     */ //Old motors & servos
+
     public IMU imu;
     public HardwareMap hardwareMap;
 
@@ -43,10 +47,14 @@ public class RobotHardware {
     }
 
 
+    /*
     public void encoderInit () {
         armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
+
+     */ //Old motors & servos
+
     public void initializePowerMotor (DcMotor motor, boolean forward) {
 
         motor.setPower(0);
@@ -86,6 +94,7 @@ public class RobotHardware {
         initializePowerMotor(backLeftMotor, true);
         initializePowerMotor(backRightMotor, false);
 
+        /*
         //AIRPLANE LAUNCHER
         airplaneLauncher = hardwareMap.get(Servo.class, "airplaneLauncher");
         airplaneLauncher.setDirection(Servo.Direction.FORWARD);
@@ -125,6 +134,8 @@ public class RobotHardware {
 
         rightClaw = hardwareMap.get(Servo.class, "rightClaw");
         rightClaw.setDirection(Servo.Direction.FORWARD);
+
+         */ //Old motors & servos
 
         // Retrieve the IMU from the hardware map
 
@@ -180,7 +191,7 @@ public class RobotHardware {
         double frontRightPower = (y + x + rx) / denominator;
         double backRightPower = (y - x + rx) / denominator;
 
-        double speedModifier = 0.3;
+        double speedModifier = 0.4;
 
         frontLeftPower = frontLeftPower - (frontLeftPower*speedModifier);
         frontRightPower = frontRightPower - (frontRightPower*speedModifier);
@@ -194,6 +205,8 @@ public class RobotHardware {
         backRightMotor.setPower(backRightPower);
     }
     //TELEOP FUNCTIONS
+
+    /*
 
     int hookTargetPos = 0;
 
@@ -253,22 +266,11 @@ public class RobotHardware {
 
         targetPos = targetPos + ((int) y * 500);
 
-        /*
-        int maxArmLimit = 1000;
-        int minArmLimit = -1000;
-
-        if (targetPos > maxArmLimit || targetPos < minArmLimit) {
-            targetPos = armMotor.getCurrentPosition();
-
-        } //Limits on encoders
-
-         */
-
-
         armMotor.setTargetPosition(targetPos);
         armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION); //TODO: Try removing this line and seeing how it runs
         armMotor.setPower(0.5);
     } //arm movement
+
 
     public void launchAirplane(boolean launchState, boolean start1, boolean start2) {
 
@@ -307,20 +309,11 @@ public class RobotHardware {
 
         sTargetPos = sTargetPos + ((int) y * 1000);
 
-        /*
-        int maxArmLimit = 10000;
-        int minArmLimit = -10000;
-
-        if (targetPos > maxArmLimit || targetPos < minArmLimit) {
-            targetPos = armMotor.getCurrentPosition();
-        }
-
-         */ //Limits on encoders
-
         slideMotor.setTargetPosition(sTargetPos);
         slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         slideMotor.setPower(0.1);
     }
+    */ //Old motors & servos functions
 
     //AUTONOMOUS FUNCTIONS
 
@@ -342,6 +335,9 @@ public class RobotHardware {
         frontLeftMotor.setPower(0);
         frontRightMotor.setPower(0);
     } //stop robot movement
+
+
+    /*
     public void presetArm(boolean atZero) {
         //Direction true = towards front
         //Direction false = towards back
@@ -352,6 +348,8 @@ public class RobotHardware {
             armMotor.setTargetPosition(100);
         }
     } //Makes hook go forward or backward for a set time without stick control
+     */
+
     int turnTime = 820; //How long robot turns for
     public void turnRight() {
         backLeftMotor.setPower(-AUTODRIVESPEED);
